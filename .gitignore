@@ -1,0 +1,17 @@
+# Dataset and interim data (large binary archives)
+data/raw/
+data/interim/
+data/features/
+models/
+
+# Python caches and bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Environment / local settings
+.env
+.venv/
+venv/
+env/

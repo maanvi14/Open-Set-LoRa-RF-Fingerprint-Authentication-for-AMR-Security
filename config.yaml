@@ -1,0 +1,60 @@
+# ============================================================
+# Familiar Stranger Experiment — Master Configuration
+# ============================================================
+
+# --- Reproducibility ---
+global_seed: 42
+episode_seeds: []      # generated at runtime from global_seed (see src/config.py)
+
+n_episodes: 20
+
+# --- Device group sizes (sum must equal 60) ---
+n_enrolled:      30
+n_proxy:         15
+n_final_unknown: 15
+
+# --- Packet splits for enrolled devices ---
+train_frac:    0.70
+cal_val_frac:  0.15
+known_test_frac: 0.15
+
+# --- Proxy packet splits ---
+proxy_cal_frac:  0.50   # PROXY_CAL  → threshold calibration
+proxy_test_frac: 0.50   # PROXY_TEST → Condition A (packet-disjoint)
+
+# --- Minimum packets per device (flag below this in audit) ---
+min_packets: 150
+
+# --- Random Forest ---
+rf_n_estimators: 300
+rf_class_weight: "balanced"
+rf_n_jobs: -1
+
+# --- Threshold calibration ---
+# Primary: Youden's J  (threshold.py)
+# Alternative: tau at 95% known acceptance
+youden_primary: true
+alternative_tau_known_acceptance: 0.95
+
+# --- LOPO / robust threshold ---
+lopo_alpha: 0.05           # max held-out-device FAR for tau_robust
+lopo_percentile: 90        # use 90th-percentile worst-device FAR for tau_robust
+
+# --- Proxy-count sweep ---
+sweep_ks: [0, 1, 3, 5, 10, 15]
+
+# --- FFT features ---
+fft_n_bins: 256            # number of FFT magnitude bins to compute
+fft_top_m_bins: 10         # dominant bin indices as features
+fft_subbands: 4            # number of equal-width sub-band energy buckets
+
+# --- Paths ---
+paths:
+  raw:      data/raw
+  interim:  data/interim
+  features: data/features
+  results:  results
+  reports:  reports
+  paper:    paper
+  figures:  results/figures
+  tables:   results/tables

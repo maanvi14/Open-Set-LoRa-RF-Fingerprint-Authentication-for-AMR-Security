@@ -1,0 +1,14 @@
+Work,Year,Signal / dataset,#devices,Open-set method,Threshold type,Unknown test devices disjoint from calibration?,Unknown devices used in calibration/training?,Reports FAR/FRR at a frozen threshold?,Paired familiar-vs-true-stranger comparison with same threshold?,Device-level (not packet-level) statistics?,Proxy-count sweep?,Leave-identity-out calibration or honest FAR estimate for the threshold?,AMR / smart-grid framing?
+Kong et al. (OpenGAN),2021,Non-RF (Computer Vision),N/A,OpenGAN adversarial discriminator,Score-based,Yes,Yes,No,No evidence found in cited paper,No,No,No,No
+Shen et al.,2022,LoRa preamble I/Q (868 MHz),60,k-NN distance anomaly detection,Fixed distance threshold,Partly (seen vs rogue test sets),No,Yes,No evidence found in cited paper,No,No,No,No
+Hanna et al.,2021,USRP ISM band (WiFi/Zigbee),50,Deep metric learning / Siamese,Distance threshold,Yes,Yes,Yes,No evidence found in cited paper,No,No,No,No
+Awan et al.,2023,Smart grid AMI / Wireless RFF,20,SVM / Random Forest,Probability threshold,No,Yes,Yes,No evidence found in cited paper,No,No,No,Yes
+Koch et al. (LORD),2023,Non-RF (Computer Vision),N/A,Density-based OOD,Energy / Logit threshold,Yes,Yes,Yes,No evidence found in cited paper,No,No,No,No
+Zhang et al.,2024,LoRa preamble I/Q,40,CNN + OpenMax,Extreme Value Theory (EVT),Partly,No,Yes,No evidence found in cited paper,No,No,No,No
+Cai et al. (JRFFP-SC),2025,LoRa preamble I/Q,45,Contrastive metric learning,Distance threshold,Yes,Yes,Yes,No evidence found in cited paper,No,No,No,No
+Ma et al.,2025,Wi-Fi preamble I/Q,54,MTPL multi-task prototypical,Prototype distance,Yes,Yes,Yes,No evidence found in cited paper,No,No,No,No
+Owusu et al.,2026,IoT Wireless signals,30,Ensemble anomaly detector,Adaptive percentile,Partly,No,Yes,No evidence found in cited paper,No,No,No,No
+CRODA-ST,2026,RF Fingerprinting,60,Source-calibrated thresholding,Source-domain calibrated,Yes,Yes,Yes,No evidence found in cited paper,No,No,No,No
+HoRFFI,2026,LoRa RF signals,60,Higher-order statistic RFF,EVT threshold,Yes,Yes,Yes,No evidence found in cited paper,No,No,No,No
+OUR WORK,2026,LoRa preamble I/Q (Shen et al.),60,Random Forest + Max Probability,Frozen Youden's J & Robust LOPO,Yes,Yes (Proxy set),Yes,Yes,Yes (Device bootstrap CIs),Yes (k=0..15 sweep),Yes (LOPO calibration & tau_robust),Yes (AMR Gateway Layer)
+

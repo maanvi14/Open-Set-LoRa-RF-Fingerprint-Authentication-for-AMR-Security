@@ -1,0 +1,27 @@
+\begin{table*}[t]
+\centering
+\caption{Protocol and methodological comparison between our work and existing literature.}
+\label{tab:related_work}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{lcccccccccccc}
+\toprule
+\textbf{Work} & \textbf{Year} & \textbf{Signal / Dataset} & \textbf{\#Dev} & \textbf{Threshold} & \textbf{Disjoint Test?} & \textbf{Frozen $\tau$?} & \textbf{Paired A/B?} & \textbf{Device CIs?} & \textbf{Sweep $k$?} & \textbf{LOPO?} & \textbf{AMR?} \\
+\midrule
+Kong et al. (OpenGAN) & 2021 & Non-RF (CV) & N/A & Score & Yes & No & No & No & No & No & No \\
+Hanna et al. & 2021 & WiFi/Zigbee & 50 & Distance & Yes & Yes & No & No & No & No & No \\
+Shen et al. & 2022 & LoRa (868 MHz) & 60 & Distance & Partly & Yes & No & No & No & No & No \\
+Awan et al. & 2023 & Smart Grid AMI & 20 & Probability & No & Yes & No & No & No & No & Yes \\
+Koch et al. (LORD) & 2023 & Non-RF (CV) & N/A & Logit & Yes & Yes & No & No & No & No & No \\
+Zhang et al. & 2024 & LoRa I/Q & 40 & EVT & Partly & Yes & No & No & No & No & No \\
+Cai et al. (JRFFP-SC) & 2025 & LoRa I/Q & 45 & Distance & Yes & Yes & No & No & No & No & No \\
+Ma et al. & 2025 & Wi-Fi I/Q & 54 & Distance & Yes & Yes & No & No & No & No & No \\
+Owusu et al. & 2026 & IoT Wireless & 30 & Percentile & Partly & Yes & No & No & No & No & No \\
+CRODA-ST & 2026 & RFF & 60 & Calibrated & Yes & Yes & No & No & No & No & No \\
+HoRFFI & 2026 & LoRa RF & 60 & EVT & Yes & Yes & No & No & No & No & No \\
+\midrule
+\textbf{OUR WORK} & \textbf{2026} & \textbf{LoRa (Shen et al.)} & \textbf{60} & \textbf{Frozen Youden/LOPO} & \textbf{Yes} & \textbf{Yes} & \textbf{Yes} & \textbf{Yes} & \textbf{Yes} & \textbf{Yes} & \textbf{Yes} \\
+\bottomrule
+\end{tabular}
+}
+\end{table*}
+
