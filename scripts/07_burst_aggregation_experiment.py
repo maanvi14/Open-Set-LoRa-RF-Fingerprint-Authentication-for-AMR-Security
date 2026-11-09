@@ -19,25 +19,13 @@ from src.features import load_all_features
 from src.splits import create_episode_split
 from src.episodes import _subset_df, _get_feature_cols
 from src.model import build_xy, predict_scores, train_model
+from src.evaluate import aggregate_burst_scores
 from src.threshold import calibrate_threshold
 from src.utils import ensure_dir, get_logger
 
 LOG = get_logger("07_burst_aggregation")
 
-def aggregate_scores_by_device(scores: np.ndarray, dev_ids: np.ndarray, L: int) -> np.ndarray:
-    """Group every L consecutive packets of each device and average their scores."""
-    if L == 1:
-        return scores
-    agg_scores = []
-    for d in np.unique(dev_ids):
-        d_scores = scores[dev_ids == d]
-        n_chunks = len(d_scores) // L
-        if n_chunks > 0:
-            chunks = d_scores[:n_chunks * L].reshape(n_chunks, L).mean(axis=1)
-            agg_scores.extend(chunks)
-        else:
-            agg_scores.append(d_scores.mean())
-    return np.array(agg_scores)
+aggregate_scores_by_device = aggregate_burst_scores
 
 def run_burst_experiment(n_episodes: int = 20) -> pd.DataFrame:
     df_all = load_all_features()

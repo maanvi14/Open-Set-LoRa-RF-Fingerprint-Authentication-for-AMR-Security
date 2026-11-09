@@ -12,7 +12,8 @@ from src.evaluate import (
     compute_macro_f1,
     compute_delta_far,
     assert_frr_identical,
-    per_device_far
+    per_device_far,
+    aggregate_burst_scores,
 )
 
 
@@ -61,3 +62,23 @@ def test_auroc():
     unknown = np.array([0.1, 0.2, 0.3, 0.4])
     auroc = compute_auroc(known, unknown)
     assert np.isclose(auroc, 1.0)
+
+
+def test_aggregate_burst_scores():
+    # 2 devices, 6 packets each
+    dev_ids = np.array([1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2])
+    scores = np.array([0.9, 0.7, 0.8, 0.6, 0.5, 0.7, 0.2, 0.4, 0.3, 0.1, 0.3, 0.2])
+
+    # L=1 returns identical array
+    agg_1 = aggregate_burst_scores(scores, dev_ids, burst_length=1)
+    assert np.allclose(agg_1, scores)
+
+    # L=3 groups into 2 chunks of 3 for each device -> 4 chunks total
+    agg_3 = aggregate_burst_scores(scores, dev_ids, burst_length=3)
+    assert len(agg_3) == 4
+    # dev 1: chunk 1 = mean(0.9, 0.7, 0.8) = 0.8; chunk 2 = mean(0.6, 0.5, 0.7) = 0.6
+    assert np.isclose(agg_3[0], 0.8)
+    assert np.isclose(agg_3[1], 0.6)
+    # dev 2: chunk 1 = mean(0.2, 0.4, 0.3) = 0.3; chunk 2 = mean(0.1, 0.3, 0.2) = 0.2
+    assert np.isclose(agg_3[2], 0.3)
+    assert np.isclose(agg_3[3], 0.2)

@@ -65,6 +65,10 @@ We identify a fundamental methodological flaw in this evaluation paradigm: \text
 \section{Related Work \& Positioning}
 The vulnerability of outlier-exposure methods to ``known-unknown'' overfitting is well-recognized in computer vision and generic open-set recognition~\cite{kong2021opengan,koch2023lord}. In wireless security, Shen et al.~\cite{shen2022lora} established the 60-device LoRa RFFI benchmark and demonstrated rogue detection via k-NN distance scores, noting that rogue devices sharing the hardware architecture of enrolled radios pose the greatest challenge. Hanna et al.~\cite{hanna2021open} and CRODA-ST~\cite{crodast2026} explored authorized-transmitter boundary formation, recognizing that open-set accuracy depends heavily on which specific transmitters populate the outlier pool.
 
+Table~\ref{tab:related_work} compares the methodology of our work against prior benchmarks, while Table~\ref{tab:lit_comparison} contrasts reported numerical metrics across physical-layer dimensions.
+
+\input{related_work_table.tex}
+
 \textbf{What We Do NOT Claim:} We do not claim to be the first to note that unseen unknowns are more difficult than seen unknowns, nor do we claim that RFFI alone can completely secure an AMR gateway against determined adversaries.
 
 \subsection{Scientific Novelty}
@@ -163,6 +167,7 @@ Peak Single-Proxy Gap & None reported & None reported & None reported & None rep
 Legitimate Baseline FRR & Not controlled & DET trade-off & $\approx 6.15\%$ & $\approx 5.5\%$ & $\approx 7.2\%$ & \textbf{8.49\% [7.16\%, 10.06\%]} \\
 Robust Remedy $\text{FAR}_{\text{robust}}$ & Not provided & Not provided & Not provided & Not provided & Not provided & \textbf{4.17\% (drops penetration by 64\%)} \\
 Robust Availability Penalty & Not quantified & Not quantified & Not quantified & Not quantified & Not quantified & \textbf{30.18\% (FRR surge $+21.7\%$)} \\
+Multi-Packet Burst Fusion ($L=5$) & Not evaluated & Not evaluated & Not evaluated & Not evaluated & Not evaluated & \textbf{$\text{FRR} \to 3.54\%$, $\text{AUROC} \to 0.9670$} \\
 Hardware Confound & Mentioned & None reported & None reported & None reported & None reported & \textbf{7/8 hardest in Block 4 (IDs 46--60)} \\
 Device Spearman $\rho$ & $p < 0.001$ (pseudo-rep) & None reported & None reported & None reported & None reported & \textbf{$\rho = 0.2097$ ($p = 0.1142, n=58$)} \\
 \hline
@@ -215,7 +220,8 @@ Evaluating proxy counts $k \in \{0, 1, 3, 5, 10, 15\}$ using nested prefixes rev
 \end{figure}
 
 \subsection{Multi-Packet Burst Decision Fusion ($L \in \{1, 3, 5\}$)}
-In operational AMR networks, utility meters transmit periodic meter telemetry or short packet retransmission bursts. To evaluate whether temporal burst aggregation overcomes the single-packet baseline trade-off, we evaluate multi-packet decision fusion by averaging decision confidence over $L$ consecutive packet transmissions per physical device across all 20 evaluation episodes:
+In operational AMR networks, utility meters transmit periodic meter telemetry or short packet retransmission bursts. To evaluate whether temporal burst aggregation overcomes the single-packet baseline trade-off, we evaluate multi-packet decision fusion by averaging decision confidence over $L$ consecutive packet transmissions per physical device across all 20 evaluation episodes. Table~\ref{tab:burst_aggregation} and Figure~\ref{fig:burst} summarize the empirical results:
+\input{tables/tab_burst_aggregation.tex}
 \begin{itemize}
     \item \textbf{Single-Packet Baseline ($L=1$):} $\text{FAR}_B = 11.90\%$, $\text{FRR} = 8.49\%$, $\Delta\text{FAR} = +0.56\%$, $\text{AUROC} = 0.9490$.
     \item \textbf{3-Packet Burst Fusion ($L=3$):} $\text{FAR}_B = 11.22\%$, $\text{FRR} = 4.37\%$, $\Delta\text{FAR} = +1.27\%$, $\text{AUROC} = 0.9642$.

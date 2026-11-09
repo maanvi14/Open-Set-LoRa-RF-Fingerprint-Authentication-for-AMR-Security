@@ -1,13 +1,14 @@
-\begin{table}
-\caption{Burst Aggregation}
-\label{tab_burst_aggregation}
-\begin{tabular}{rrrrrr}
+\begin{table}[t]
+\centering
+\caption{Multi-Packet Burst Decision Fusion Performance Across 20 Episodes ($N = 26{,}000$ Transmissions)}
+\label{tab:burst_aggregation}
+\begin{tabular}{cccccc}
 \toprule
-burst_length & FAR_A & FAR_B & FRR & DeltaFAR & AUROC \\
+\textbf{Burst Length ($L$)} & \textbf{$\text{FAR}_A$} & \textbf{$\text{FAR}_B$} & \textbf{FRR} & \textbf{$\Delta\text{FAR}$} & \textbf{AUROC} \\
 \midrule
-1 & 0.113400 & 0.119000 & 0.084900 & 0.005600 & 0.949000 \\
-3 & 0.099500 & 0.112200 & 0.043700 & 0.012700 & 0.964200 \\
-5 & 0.088100 & 0.104500 & 0.035400 & 0.016400 & 0.967000 \\
+1 (Single packet) & 11.34\% & 11.90\% & 8.49\% & +0.56\% & 0.9490 \\
+3 (3-packet burst) & 9.95\% & 11.22\% & 4.37\% & +1.27\% & 0.9642 \\
+5 (5-packet burst) & 8.81\% & 10.45\% & 3.54\% & +1.64\% & 0.9670 \\
 \bottomrule
 \end{tabular}
 \end{table}

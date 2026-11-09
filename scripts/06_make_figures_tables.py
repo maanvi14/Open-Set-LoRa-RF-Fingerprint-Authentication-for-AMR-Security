@@ -39,13 +39,31 @@ def export_latex_tables() -> None:
             LOG.warning("Table not found (skipping): %s", csv_path)
             continue
         df = pd.read_csv(csv_path)
-        # Round floats for cleaner tables
-        df = df.round(4)
-        latex = df.to_latex(
-            index=False,
-            label=label,
-            caption=label.replace("tab_", "").replace("_", " ").title(),
-        )
+        if label == "tab_burst_aggregation":
+            latex = (
+                "\\begin{table}[t]\n"
+                "\\centering\n"
+                "\\caption{Multi-Packet Burst Decision Fusion Performance Across 20 Episodes ($N = 26{,}000$ Transmissions)}\n"
+                "\\label{tab:burst_aggregation}\n"
+                "\\begin{tabular}{cccccc}\n"
+                "\\toprule\n"
+                "\\textbf{Burst Length ($L$)} & \\textbf{$\\text{FAR}_A$} & \\textbf{$\\text{FAR}_B$} & \\textbf{FRR} & \\textbf{$\\Delta\\text{FAR}$} & \\textbf{AUROC} \\\\\n"
+                "\\midrule\n"
+                f"1 (Single packet) & {df.loc[df['burst_length']==1, 'FAR_A'].values[0]*100:.2f}\\% & {df.loc[df['burst_length']==1, 'FAR_B'].values[0]*100:.2f}\\% & {df.loc[df['burst_length']==1, 'FRR'].values[0]*100:.2f}\\% & +{df.loc[df['burst_length']==1, 'DeltaFAR'].values[0]*100:.2f}\\% & {df.loc[df['burst_length']==1, 'AUROC'].values[0]:.4f} \\\\\n"
+                f"3 (3-packet burst) & {df.loc[df['burst_length']==3, 'FAR_A'].values[0]*100:.2f}\\% & {df.loc[df['burst_length']==3, 'FAR_B'].values[0]*100:.2f}\\% & {df.loc[df['burst_length']==3, 'FRR'].values[0]*100:.2f}\\% & +{df.loc[df['burst_length']==3, 'DeltaFAR'].values[0]*100:.2f}\\% & {df.loc[df['burst_length']==3, 'AUROC'].values[0]:.4f} \\\\\n"
+                f"5 (5-packet burst) & {df.loc[df['burst_length']==5, 'FAR_A'].values[0]*100:.2f}\\% & {df.loc[df['burst_length']==5, 'FAR_B'].values[0]*100:.2f}\\% & {df.loc[df['burst_length']==5, 'FRR'].values[0]*100:.2f}\\% & +{df.loc[df['burst_length']==5, 'DeltaFAR'].values[0]*100:.2f}\\% & {df.loc[df['burst_length']==5, 'AUROC'].values[0]:.4f} \\\\\n"
+                "\\bottomrule\n"
+                "\\end{tabular}\n"
+                "\\end{table}\n"
+            )
+        else:
+            # Round floats for cleaner tables
+            df = df.round(4)
+            latex = df.to_latex(
+                index=False,
+                label=label,
+                caption=label.replace("tab_", "").replace("_", " ").title(),
+            )
         out = CFG.path_paper / "tables" / f"{label}.tex"
         out.write_text(latex, encoding="utf-8")
         LOG.info("LaTeX table saved → %s", out)

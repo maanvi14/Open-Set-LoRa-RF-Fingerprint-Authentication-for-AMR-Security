@@ -135,6 +135,38 @@ def per_device_far(
     return {dev_id: compute_far(scores, tau) for dev_id, scores in scores_dict.items()}
 
 
+def aggregate_burst_scores(
+    scores: np.ndarray,
+    dev_ids: np.ndarray,
+    burst_length: int,
+) -> np.ndarray:
+    """
+    Group every `burst_length` consecutive packets of each device and average their scores.
+
+    Parameters
+    ----------
+    scores       : np.ndarray shape (N,)  decision scores
+    dev_ids      : np.ndarray shape (N,)  device IDs corresponding to scores
+    burst_length : int                    number of consecutive packets to average
+
+    Returns
+    -------
+    np.ndarray shape (M,) aggregated burst decision scores
+    """
+    if burst_length <= 1:
+        return np.asarray(scores, dtype=float)
+    agg_scores = []
+    for d in np.unique(dev_ids):
+        d_scores = scores[dev_ids == d]
+        n_chunks = len(d_scores) // burst_length
+        if n_chunks > 0:
+            chunks = d_scores[:n_chunks * burst_length].reshape(n_chunks, burst_length).mean(axis=1)
+            agg_scores.extend(chunks)
+        else:
+            agg_scores.append(d_scores.mean())
+    return np.array(agg_scores, dtype=float)
+
+
 if __name__ == "__main__":
     import logging
     logging.basicConfig(level=logging.INFO)

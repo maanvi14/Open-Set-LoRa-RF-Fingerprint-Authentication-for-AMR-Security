@@ -10,9 +10,11 @@
 5. **Metrics** — FAR, FRR, AUROC, macro-F1, ΔF​AR definition, device-level CI methodology.
 6. **Results**
    - 6.1 A/B comparison (packet-disjoint vs identity-disjoint)
-   - 6.2 Proxy-count sweep
-   - 6.3 Per-device analysis and hardness explanation
-   - 6.4 LOPO estimator bias and robust threshold trade-off
+   - 6.2 Device-matched paired analysis (confound elimination)
+   - 6.3 Proxy-count sweep ($k \in \{0, 1, 3, 5, 10, 15\}$)
+   - 6.4 Per-device hardness and hardware model clustering
+   - 6.5 LOPO estimator bias and identity-robust threshold trade-off
+   - 6.6 Multi-packet burst decision fusion ($L \in \{1, 3, 5\}$)
 7. **Discussion** — Interpret ΔF​AR; practical implications for AMR gateway evaluation.
 8. **Limitations** — See §0.5 and Phase 11 requirements.
 9. **Conclusion** — Answer all questions from Phase 11.
