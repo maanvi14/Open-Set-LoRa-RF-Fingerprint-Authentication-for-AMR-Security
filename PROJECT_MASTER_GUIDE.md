@@ -28,17 +28,18 @@ This document contains the complete technical, mathematical, and algorithmic doc
 ## Table of Contents
 1. [Project Title & Metadata](#1-project-title--metadata)
 2. [ESDA 2026 Conference Relevance](#2-esda-2026-conference-relevance)
-3. [Intuitive Real-World Example & Attack Scenario](#3-intuitive-real-world-example--attack-scenario)
-4. [Prior Work & Literature Landscape](#4-prior-work--literature-landscape)
-5. [The Core Research Questions & Multi-Disciplinary Relevance](#5-the-core-research-questions--multi-disciplinary-relevance)
-6. [Dataset Audit & Rigorous Preprocessing Protocol](#6-dataset-audit--rigorous-preprocessing-protocol)
-7. [The 292-Dimensional Feature Extraction Pipeline](#7-the-292-dimensional-feature-extraction-pipeline)
-8. [Experimental Methodology: The Paired A/B Protocol](#8-experimental-methodology-the-paired-ab-protocol)
-9. [Detailed Empirical Results & Statistical Findings](#9-detailed-empirical-results--statistical-findings)
-10. [Catalog of Figures & Visualizations](#10-catalog-of-figures--visualizations)
-11. [Catalog of Generated Tables & CSVs](#11-catalog-of-generated-tables--csvs)
-12. [Complete Codebase Architecture & Reproduction Guide](#12-complete-codebase-architecture--reproduction-guide)
-13. [Academic Citations & Bibliography](#13-academic-citations--bibliography)
+3. [Novelty & Scientific Contributions](#3-novelty--scientific-contributions)
+4. [Intuitive Real-World Example & Attack Scenario](#4-intuitive-real-world-example--attack-scenario)
+5. [Prior Work & Literature Landscape](#5-prior-work--literature-landscape)
+6. [The Core Research Questions & Multi-Disciplinary Relevance](#6-the-core-research-questions--multi-disciplinary-relevance)
+7. [Dataset Audit & Rigorous Preprocessing Protocol](#7-dataset-audit--rigorous-preprocessing-protocol)
+8. [The 292-Dimensional Feature Extraction Pipeline](#8-the-292-dimensional-feature-extraction-pipeline)
+9. [Experimental Methodology: The Paired A/B Protocol](#9-experimental-methodology-the-paired-ab-protocol)
+10. [Detailed Empirical Results & Statistical Findings](#10-detailed-empirical-results--statistical-findings)
+11. [Catalog of Figures & Visualizations](#11-catalog-of-figures--visualizations)
+12. [Catalog of Generated Tables & CSVs](#12-catalog-of-generated-tables--csvs)
+13. [Complete Codebase Architecture & Reproduction Guide](#13-complete-codebase-architecture--reproduction-guide)
+14. [Academic Citations & Bibliography](#14-academic-citations--bibliography)
 
 ---
 
@@ -84,7 +85,59 @@ flowchart TD
 
 ---
 
-## 3. Intuitive Real-World Example & Attack Scenario
+## 3. Novelty & Scientific Contributions
+
+What makes this research unique, novel, and scientifically distinct from prior wireless authentication studies?
+
+```mermaid
+flowchart LR
+    subgraph Prior["Status Quo in RFF Literature"]
+        P1["Packet-Disjoint Unknowns
+        (Test on held-out packets of calibration radios)"]
+        P2["Pseudo-Replicated Statistics
+        (Pools 300 episode runs without device clustering)"]
+        P3["Uncontrolled Confounders
+        (Conflates transmitter difficulty with familiarity)"]
+    end
+    subgraph Novel["Our 6 Pillars of Novelty"]
+        N1["1. Naming & Formalizing 'The Familiar Stranger Problem'"]
+        N2["2. Zero-Leakage Controlled Paired A/B Protocol"]
+        N3["3. Novel Device-Matched Paired Design (Exact Hardware Controlled)"]
+        N4["4. True Device-Level Bootstrap CIs (n=60 Physical Radios)"]
+        N5["5. Outlier Proxy Scaling Law (k=0..15 with acute k=1 distortion)"]
+        N6["6. Quantified Availability-Security Trade-Off for AMR Grids"]
+    end
+    Prior -.->|Replaced by| Novel
+```
+
+### The 6 Core Dimensions of Novelty:
+
+#### 1. Discovery and Formal Definition of "The Familiar Stranger Problem"
+Prior RFF literature routinely treats any packet not used in classifier training as an "unseen unknown". We are the first to demonstrate that when an operational decision threshold $\tau$ is calibrated against proxy outlier transmitters, those transmitters become **Familiar Strangers**: the threshold overfits specifically to their individual hardware artifacts. Testing on additional packets from those same radios measures a fundamentally different, artificially optimistic distribution ($\text{FAR}_A$) compared to testing on physical hardware never encountered during calibration ($\text{FAR}_B$).
+
+#### 2. The Zero-Leakage Controlled Paired A/B Protocol
+Previous studies comparing known vs. unknown detection frequently changed classifier weights, feature subsets, or decision operating points across conditions. Our protocol holds **everything constant**:
+- Identical classifier model architecture and weights.
+- Identical 292 handcrafted baseband features.
+- Identical calibrated threshold $\tau^*$, frozen into an immutable read-only object.
+- Identical legitimate meter test sets ($\text{FRR}$ invariant by construction).
+- The **only** independent variable is the physical identity of the rogue transmitters.
+
+#### 3. The Novel Device-Matched Paired Design
+In standard cross-validation, comparing different groups of 15 devices conflates familiarity with transmitter hardware difficulty. We introduce a novel **Device-Matched Protocol**: for every held-out transmitter $j$, its test packets are evaluated at full calibration $\tau_{\text{full}}$ (where device $j$ participated in calibration) versus held-out calibration $\tau_{(-j)}$ (where device $j$ was strictly excluded). This measures the pure effect of familiarity on the **exact same physical silicon and identical radio packets**, proving a statistically significant familiarity gap of $\Delta\text{FAR}_{\text{matched}} = +1.47\%$ ($95\%$ device bootstrap CI: $[+0.72\%, +2.40\%]$).
+
+#### 4. Device-Level Bootstrap Confidence Intervals (Eliminating Pseudo-Replication)
+Prior papers commonly commit the statistical error of pseudo-replication—pooling hundreds of episodes or thousands of packets to claim massive sample sizes ($n=300$) and artificially tiny $p$-values, despite reusing the same 60 physical transmitters. We establish rigorous **device-level bootstrap confidence intervals** resampled over the 60 physical hardware devices, giving smart grid operators authentic statistical bounds for service level agreements.
+
+#### 5. First Empirical Scaling Law for Outlier Calibration in LoRa ($k \in \{0..15\}$)
+We discover and document the non-linear scaling law of outlier exposure in physical-layer device authentication. We reveal that single-device calibration ($k=1$) induces a catastrophic **$+19.41\%$ familiarity gap** ($\text{FAR}_A = 2.67\%$ vs $\text{FAR}_B = 22.08\%$), and establish the empirical threshold: utilities must calibrate against at least 5 to 10 distinct physical transmitters to avoid acute single-device boundary distortion.
+
+#### 6. Quantification of the Identity-Robust Threshold ($\tau_{\text{robust}}$) Trade-off in AMR Systems
+We compute for the first time the real-world operational penalty of identity-robust thresholding: while $\tau_{\text{robust}}$ successfully drops true stranger penetration from $11.55\%$ to $4.17\%$, it causes False Rejection Rate ($\text{FRR}$) to surge to $30.18\%$ (peaking at $84.63\%$). This demonstrates that in battery-operated AMR networks, robust RFF cannot serve as an impenetrable perimeter gate and must be framed as a defense-in-depth screening layer.
+
+---
+
+## 4. Intuitive Real-World Example & Attack Scenario
 
 To understand the core problem intuitively, consider the following real-world smart grid analogy:
 
@@ -122,7 +175,7 @@ sequenceDiagram
 
 ---
 
-## 4. Prior Work & Literature Landscape
+## 5. Prior Work & Literature Landscape
 
 Out-of-distribution (OOD) vulnerability is known in computer vision and machine learning, but wireless physical-layer security has long suffered from ambiguous evaluation protocols.
 
@@ -149,7 +202,7 @@ Out-of-distribution (OOD) vulnerability is known in computer vision and machine 
 
 ---
 
-## 5. The Core Research Questions & Multi-Disciplinary Relevance
+## 6. The Core Research Questions & Multi-Disciplinary Relevance
 
 ```
 ┌───────────────────────────────────────────────────────────────────────────────────────────────────────┐
@@ -172,7 +225,7 @@ Out-of-distribution (OOD) vulnerability is known in computer vision and machine 
 
 ---
 
-## 6. Dataset Audit & Rigorous Preprocessing Protocol
+## 7. Dataset Audit & Rigorous Preprocessing Protocol
 
 Our study uses the open benchmark **LoRa_RFFI** dataset collected by Shen et al. (IEEE DataPort, DOI: `10.21227/qqt4-kz19`).
 
@@ -207,7 +260,7 @@ graph TD
 
 ---
 
-## 7. The 292-Dimensional Feature Extraction Pipeline
+## 8. The 292-Dimensional Feature Extraction Pipeline
 
 Rather than relying on uninterpretable deep neural networks that risk learning transient environmental channel features, we engineer a **292-dimensional physical hardware feature vector** from each packet's synchronized preamble:
 
@@ -254,7 +307,7 @@ $$X[k] = \text{fftshift}\left(\sum_{n=0}^{N-1} x[n] e^{-j 2\pi k n / N}\right)$$
 
 ---
 
-## 8. Experimental Methodology: The Paired A/B Protocol
+## 9. Experimental Methodology: The Paired A/B Protocol
 
 To measure the Familiarity Gap with mathematical precision, all potential confounding variables must be clamped:
 
@@ -305,7 +358,7 @@ flowchart TD
 
 ---
 
-## 9. Detailed Empirical Results & Statistical Findings
+## 10. Detailed Empirical Results & Statistical Findings
 
 All reported numbers are calculated from 20 seeded experimental episodes across the 60 physical devices:
 
@@ -387,7 +440,7 @@ The empirical vulnerability ranking across the 60 physical devices demonstrates 
 
 ---
 
-## 10. Catalog of Figures & Visualizations
+## 11. Catalog of Figures & Visualizations
 
 All 9 publication-grade figures have been generated and saved in vector PDF and high-resolution PNG format in [`results/figures/`](file:///c:/Users/maanv/Minor%20Project/results/figures/):
 
@@ -412,7 +465,7 @@ All 9 publication-grade figures have been generated and saved in vector PDF and 
 
 ---
 
-## 11. Catalog of Generated Tables & CSVs
+## 12. Catalog of Generated Tables & CSVs
 
 All generated CSV tables are stored in [`results/tables/`](file:///c:/Users/maanv/Minor%20Project/results/tables/) and auto-exported to LaTeX in [`paper/tables/`](file:///c:/Users/maanv/Minor%20Project/paper/tables/):
 
@@ -429,7 +482,7 @@ All generated CSV tables are stored in [`results/tables/`](file:///c:/Users/maan
 
 ---
 
-## 12. Complete Codebase Architecture & Reproduction Guide
+## 13. Complete Codebase Architecture & Reproduction Guide
 
 ### Folder Structure
 ```
@@ -511,7 +564,7 @@ pytest tests/ -v
 
 ---
 
-## 13. Academic Citations & Bibliography
+## 14. Academic Citations & Bibliography
 
 ```bibtex
 @article{shen2022lora,

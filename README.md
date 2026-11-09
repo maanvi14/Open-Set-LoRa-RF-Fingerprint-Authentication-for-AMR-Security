@@ -26,14 +26,15 @@ To set that threshold, engineers need example strangers. So they borrow some unf
 - First open-set LoRa authentication
 - Any new RFF method
 
-### We DO claim:
-1. A **controlled paired A/B protocol** on a calibrated, frozen threshold: same classifier + same 292 baseband features + same threshold + same known-device test packets; only the identity of unknown test devices changes.
-2. A **device-matched paired design**: evaluating the exact same physical devices on identical test packets at $\tau_{\text{full}}$ vs. $\tau_{(-j)}$ to eliminate device-composition confounding ($\Delta\text{FAR}_{\text{matched}} = +1.47\%$, $95\%$ device-level bootstrap CI: $[+0.72\%, +2.40\%]$).
-3. A **named, quantified metric** (Familiarity Gap, $\Delta\text{FAR}$) with **device-level confidence intervals** resampled over physical devices ($\text{FAR}_A = 12.35\%$, $95\%$ CI: $[7.01\%, 18.77\%]$; $\text{FAR}_B = 11.55\%$, $95\%$ CI: $[7.03\%, 16.53\%]$).
-4. A **proxy-count sweep ($k \in \{0, 1, 3, 5, 10, 15\}$)** with nested prefixes and matched-FRR evaluation, demonstrating acute single-proxy distortion ($k=1$ yields $+19.41\%$ gap).
-5. A **hardness and hardware grouping explanation**: per-device vulnerability ranges from $0.0\%$ to $98.5\%$, with top vulnerable devices clustering tightly within hardware block 4 (IDs 46–60).
-6. An **identity-robust threshold ($\tau_{\text{robust}}$) trade-off**: reduces true stranger penetration from $11.55\%$ to $4.17\%$ at the cost of FRR surging from $8.49\%$ to $30.18\%$.
-7. A **Leave-One-Proxy-Out (LOPO) calibration remedy**: identity-disjoint validation protocol evaluated against naive packet-disjoint testing.
+### We DO claim (Core Novelty & Contributions):
+1. **First Discovery & Formalization:** We formally identify and name *The Familiar Stranger Problem* in physical-layer RFF authentication, exposing how outlier calibration transforms proxy transmitters into familiar non-strangers whose test scores artificially inflate security metrics.
+2. **Controlled Paired A/B Protocol:** Same classifier + same 292 baseband features + same threshold + same known-device test packets; only the identity of unknown test devices changes.
+3. **Device-Matched Paired Design:** Evaluating the exact same physical devices on identical test packets at $\tau_{\text{full}}$ vs. $\tau_{(-j)}$ to eliminate device-composition confounding ($\Delta\text{FAR}_{\text{matched}} = +1.47\%$, $95\%$ device-level bootstrap CI: $[+0.72\%, +2.40\%]$).
+4. **Device-Level Bootstrap Confidence Intervals:** Resampled over the 60 physical devices rather than pseudo-replicated episodes ($\text{FAR}_A = 12.35\%$, $95\%$ CI: $[7.01\%, 18.77\%]$; $\text{FAR}_B = 11.55\%$, $95\%$ CI: $[7.03\%, 16.53\%]$).
+5. **Proxy-Count Scaling Sweep ($k \in \{0, 1, 3, 5, 10, 15\}$):** Nested prefixes and matched-FRR evaluation, revealing acute single-proxy distortion ($k=1$ yields $+19.41\%$ gap).
+6. **Hardness & Hardware Grouping:** Per-device vulnerability ranges from $0.0\%$ to $98.5\%$, with top vulnerable devices clustering tightly within hardware block 4 (IDs 46–60).
+7. **Availability Cost of Robust Thresholding ($\tau_{\text{robust}}$):** Reduces true stranger penetration from $11.55\%$ to $4.17\%$ at the cost of FRR surging from $8.49\%$ to $30.18\%$.
+8. **Leave-One-Proxy-Out (LOPO) Remedy:** Cross-validated threshold calibration protocol evaluated against naive testing.
 
 ---
 

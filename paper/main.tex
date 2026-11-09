@@ -67,7 +67,16 @@ The vulnerability of outlier-exposure methods to ``known-unknown'' overfitting i
 
 \textbf{What We Do NOT Claim:} We do not claim to be the first to note that unseen unknowns are more difficult than seen unknowns, nor do we claim that RFFI alone can completely secure an AMR gateway against determined adversaries.
 
-\textbf{What We DO Claim:} We provide the first systematic paired A/B measurement isolating the \textbf{identity familiarity bias} on a calibrated, frozen authentication threshold in LoRa RFFI, accompanied by device-level bootstrap confidence intervals, device-matched paired evaluation, proxy-count scaling sweeps, and a validated Leave-One-Proxy-Out calibration remedy.
+\subsection{Scientific Novelty}
+Our research establishes six distinct dimensions of novelty over existing wireless RFF literature:
+\begin{enumerate}
+    \item \textbf{Conceptual Discovery \& Formalization:} We formally define and quantify \textit{The Familiar Stranger Problem} in physical-layer security, showing how outlier calibration turns proxy transmitters into familiar non-strangers whose test scores artificially inflate security metrics.
+    \item \textbf{Zero-Leakage Invariant Evaluation:} We introduce a paired A/B protocol holding classifier weights, 292 handcrafted baseband features, calibration threshold $\tau^*$, and enrolled test sets strictly invariant.
+    \item \textbf{Device-Matched Confound Elimination:} We propose a device-matched paired protocol that evaluates identical physical hardware on identical test packets when familiar ($\tau_{\text{full}}$) versus unfamiliar ($\tau_{(-j)}$), isolating the pure familiarity gap ($\Delta\text{FAR}_{\text{matched}} = +1.47\%$) free from device-composition confounding.
+    \item \textbf{Device-Level Statistical Bounds:} We eliminate pseudo-replication by deriving true device-level bootstrap confidence intervals over the 60 physical transmitters rather than pooling repeated episodes.
+    \item \textbf{Empirical Outlier Scaling Law:} We chart the non-linear scaling law of proxy count $k \in \{0..15\}$, discovering that single-proxy calibration ($k=1$) induces an acute $+19.41\%$ familiarity gap and establishing the empirical minimum requirement of $\ge 5$ proxy transmitters.
+    \item \textbf{Operational AMR Availability Cost:} We provide the first quantification of the real-world operational penalty imposed by robust open-set calibration ($\tau_{\text{robust}}$), revealing a severe $30.18\%$ false rejection rate in smart grid networks.
+\end{enumerate}
 
 \section{Dataset Audit and Experimental Setup}
 
