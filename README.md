@@ -1,5 +1,7 @@
 # Packet-Disjoint vs Identity-Disjoint Evaluation of Open-Set LoRa RF Fingerprint Authentication for AMR Gateway Security
 
+> 📖 **Comprehensive Project Monograph:** For a complete, self-contained walkthrough covering mathematical formulation, real-world smart grid attack scenarios, full 292-feature breakdown, literature comparison table, all 9 publication figures, all generated tables, and reproduction guidelines, please read [**`PROJECT_MASTER_GUIDE.md`**](PROJECT_MASTER_GUIDE.md).
+
 ---
 
 ## The Story
