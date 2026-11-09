@@ -61,8 +61,9 @@ def main() -> None:
     try:
         df_nb = run_neighbour_analysis(n_episodes=n_ep)
         if len(df_nb) > 0:
-            rho = df_nb["spearman_rho"].iloc[0]
-            print(f"\nSpearman rho(distance, FAR_B) = {rho:.4f}")
+            rho = df_nb["device_level_rho"].iloc[0]
+            pval = df_nb["device_level_pval"].iloc[0]
+            print(f"\nSpearman rho(distance, FAR_B) = {rho:.4f} (p = {pval:.4f})")
     except Exception as e:
         LOG.warning("Neighbour analysis skipped: %s", e)
 

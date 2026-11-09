@@ -106,11 +106,38 @@ def _split_indices(
     return cuts
 
 
+# Hardware / file blocks in LoRa_RFFI dataset:
+# Block 1: 1-30 (Train baseline, 30 devices)
+# Block 2: 31-40 (Residential, 10 devices)
+# Block 3: 41-45 (Rogue, 5 devices)
+# Block 4: 46-60 (Other device type, 15 devices)
+DEVICE_BLOCKS = {
+    "block1_train": list(range(1, 31)),
+    "block2_residential": list(range(31, 41)),
+    "block3_rogue": list(range(41, 46)),
+    "block4_other_model": list(range(46, 61)),
+}
+
+# Block quotas for (enrolled=30, proxy=15, final_unknown=15)
+# Block 1 (30): 15 enrolled, 8 proxy, 7 final_unknown
+# Block 2 (10): 5 enrolled, 2 proxy, 3 final_unknown
+# Block 3 (5):  2 enrolled, 2 proxy, 1 final_unknown
+# Block 4 (15): 8 enrolled, 3 proxy, 4 final_unknown
+# Sums: enrolled=30, proxy=15, final_unknown=15
+BLOCK_QUOTAS = {
+    "block1_train": (15, 8, 7),
+    "block2_residential": (5, 2, 3),
+    "block3_rogue": (2, 2, 1),
+    "block4_other_model": (8, 3, 4),
+}
+
+
 def create_episode_split(
     all_device_ids: List[int],
     packet_counts: Dict[int, int],
     episode_idx: int,
     seed: Optional[int] = None,
+    stratify_by_block: bool = True,
 ) -> EpisodeSplit:
     """
     Create a full EpisodeSplit for one episode.
@@ -125,6 +152,9 @@ def create_episode_split(
         Episode index (0-based).
     seed : int, optional
         Seed for this episode (derived from CFG.episode_seed if None).
+    stratify_by_block : bool
+        If True, stratify device roles across the 4 hardware/file blocks to prevent
+        confounding stranger evaluation with hardware model composition.
     """
     if seed is None:
         seed = CFG.episode_seed(episode_idx)
@@ -141,13 +171,32 @@ def create_episode_split(
             f"Not enough devices: need {n_en+n_px+n_fu}, have {total}"
         )
 
-    # Shuffle devices
-    dev_arr = np.array(sorted(all_device_ids))
-    rng.shuffle(dev_arr)
+    all_set = set(all_device_ids)
+    is_standard_60 = (all_set == set(range(1, 61)))
 
-    enrolled_ids   = sorted(dev_arr[:n_en].tolist())
-    proxy_ids      = sorted(dev_arr[n_en:n_en + n_px].tolist())
-    final_unk_ids  = sorted(dev_arr[n_en + n_px:n_en + n_px + n_fu].tolist())
+    if stratify_by_block and is_standard_60:
+        enrolled_ids: List[int] = []
+        proxy_ids: List[int] = []
+        final_unk_ids: List[int] = []
+
+        for b_name, b_devs in DEVICE_BLOCKS.items():
+            b_arr = np.array(b_devs)
+            rng.shuffle(b_arr)
+            q_en, q_px, q_fu = BLOCK_QUOTAS[b_name]
+            enrolled_ids.extend(b_arr[:q_en].tolist())
+            proxy_ids.extend(b_arr[q_en:q_en + q_px].tolist())
+            final_unk_ids.extend(b_arr[q_en + q_px:q_en + q_px + q_fu].tolist())
+
+        enrolled_ids = sorted(enrolled_ids)
+        proxy_ids = sorted(proxy_ids)
+        final_unk_ids = sorted(final_unk_ids)
+    else:
+        # Fallback to unstratified shuffle (e.g. for arbitrary test pools)
+        dev_arr = np.array(sorted(all_device_ids))
+        rng.shuffle(dev_arr)
+        enrolled_ids   = sorted(dev_arr[:n_en].tolist())
+        proxy_ids      = sorted(dev_arr[n_en:n_en + n_px].tolist())
+        final_unk_ids  = sorted(dev_arr[n_en + n_px:n_en + n_px + n_fu].tolist())
 
     split = EpisodeSplit(
         episode_idx=episode_idx,

@@ -22,6 +22,9 @@ known_test_frac: 0.15
 proxy_cal_frac:  0.50   # PROXY_CAL  → threshold calibration
 proxy_test_frac: 0.50   # PROXY_TEST → Condition A (packet-disjoint)
 
+# --- Feature options ---
+amplitude_normalised: false # Audit shows mean amplitude ~0.217, so include envelope stats
+
 # --- Minimum packets per device (flag below this in audit) ---
 min_packets: 150
 

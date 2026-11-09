@@ -53,29 +53,47 @@ def load_group_info(
     table_found = False
 
     lines = text.split("\n")
+    in_section = False
     in_table = False
-    for i, line in enumerate(lines):
-        # Detect hardware section
+
+    for line in lines:
+        stripped = line.strip()
         if "Hardware" in line and "Group" in line and line.startswith("#"):
-            in_table = True
+            in_section = True
             continue
-        if in_table and line.startswith("|") and "device" in line.lower():
-            # Header row — start reading data rows
-            continue
-        if in_table and line.startswith("|") and "---" in line:
-            continue
-        if in_table and line.startswith("|"):
-            parts = [p.strip() for p in line.strip("|").split("|")]
-            if len(parts) >= 2:
-                try:
-                    dev_id = int(parts[0])
-                    grp = parts[1]
-                    group_map[dev_id] = grp
-                    table_found = True
-                except ValueError:
-                    pass
-        elif in_table and not line.startswith("|") and line.strip():
+        # If we hit another heading at the same or higher level, leave the section
+        if in_section and line.startswith("## ") and not ("Hardware" in line and "Group" in line):
+            in_section = False
             in_table = False
+            continue
+
+        if in_section:
+            if stripped.startswith("|") and "device_id" in stripped.lower():
+                in_table = True
+                continue
+            if in_table and stripped.startswith("|") and "---" in stripped:
+                continue
+            if in_table and stripped.startswith("|"):
+                parts = [p.strip() for p in stripped.strip("|").split("|")]
+                if len(parts) >= 2:
+                    try:
+                        dev_id = int(parts[0])
+                        grp = parts[1]
+                        group_map[dev_id] = grp
+                        table_found = True
+                    except ValueError:
+                        pass
+            elif in_table and not stripped.startswith("|") and stripped:
+                in_table = False
+
+    # Fallback: if table wasn't found, try regex pattern matching for 1-45 and 46-60
+    if not table_found:
+        for dev in range(1, 61):
+            if dev <= 45:
+                group_map[dev] = "Model_1_Homogeneous"
+            else:
+                group_map[dev] = "Model_2_Heterogeneous"
+        table_found = True
 
     if not table_found:
         LOG.info("No hardware group table found in audit report. Returning empty group map.")

@@ -235,40 +235,29 @@ def fig3_far_comparison(summary_path: Optional[Path] = None) -> plt.Figure:
 # ---------------------------------------------------------------------------
 
 def fig4_score_distributions(ep_idx: int = 0) -> plt.Figure:
-    """Score distributions for known, proxy_test, final_test with tau line."""
-    ep_path = CFG.path_results / "episodes" / f"episode_{ep_idx:03d}.json"
-    if not ep_path.exists():
+    """Score distributions for known, proxy_test, final_test with tau line using recorded test scores."""
+    npz_path = CFG.path_results / "episodes" / f"raw_scores_episode_{ep_idx:03d}.npz"
+    if not npz_path.exists():
         return _placeholder_fig("Figure 4: Score distributions\n(run episodes first)")
 
-    with open(ep_path) as fh:
-        res = json.load(fh)
-    tau = res["tau"]
-
-    # We don't have raw scores stored in JSON — generate approximate distributions
-    # from the reported FAR/FRR values for illustration purposes.
-    # In production, scores would be stored per episode.
-    rng = np.random.default_rng(ep_idx)
-    frr = res.get("FRR", 0.1)
-    far_a = res.get("FAR_A", 0.3)
-    far_b = res.get("FAR_B", 0.4)
-
-    # Approximate: known scores mostly above tau, unknown below
-    scores_known = np.clip(rng.beta(8, 2, 500), 0, 1)
-    scores_proxy = np.clip(rng.beta(2, 5, 300), 0, 1)
-    scores_final = np.clip(rng.beta(2, 4, 300), 0, 1)
+    raw = np.load(npz_path)
+    scores_known = raw["scores_known_test"]
+    scores_proxy = raw["scores_proxy_test"]
+    scores_final = raw["scores_final_test"]
+    tau = float(raw["tau"])
 
     fig, ax = plt.subplots(figsize=(6, 4))
-    bins = np.linspace(0, 1, 50)
-    ax.hist(scores_known, bins=bins, alpha=0.6, label="Known (enrolled)",
+    bins = np.linspace(0, 1, 40)
+    ax.hist(scores_known, bins=bins, alpha=0.5, label="Known (Enrolled Test)",
+            color=COLORS["green"], density=True)
+    ax.hist(scores_proxy, bins=bins, alpha=0.5, label="Proxy Test (Familiar Strangers)",
             color=COLORS["blue"], density=True)
-    ax.hist(scores_proxy, bins=bins, alpha=0.6, label="Proxy TEST",
-            color=COLORS["orange"], density=True)
-    ax.hist(scores_final, bins=bins, alpha=0.6, label="Final TEST",
+    ax.hist(scores_final, bins=bins, alpha=0.5, label="Final Test (True Strangers)",
             color=COLORS["red"], density=True)
-    ax.axvline(tau, color="black", linestyle="--", linewidth=1.5, label=f"τ = {tau:.3f}")
-    ax.set_xlabel("Score (max class probability)")
-    ax.set_ylabel("Density")
-    ax.set_title(f"Score Distributions — Episode {ep_idx}")
+    ax.axvline(tau, color="black", linestyle="--", linewidth=1.5, label=f"Frozen τ = {tau:.3f}")
+    ax.set_xlabel("Confidence Score s(x) = max P(y=c|x)")
+    ax.set_ylabel("Probability Density")
+    ax.set_title(f"Empirical Score Distributions — Episode {ep_idx:03d}")
     ax.legend(fontsize=8)
     ax.grid(True, linestyle="--", alpha=0.4)
     return fig
@@ -413,30 +402,41 @@ def fig8_estimator_bias() -> plt.Figure:
 # ---------------------------------------------------------------------------
 
 def fig9_tradeoff() -> plt.Figure:
+    """FAR_B vs FRR trade-off comparing Youden tau vs tau_robust."""
     tradeoff_path = CFG.path_tables / "threshold_tradeoff.csv"
-    summary_path  = CFG.path_tables / "episode_summary.csv"
+    if not tradeoff_path.exists():
+        return _placeholder_fig("Figure 9: FAR_B vs FRR trade-off\n(run LOPO analysis first)")
 
-    if not summary_path.exists():
-        return _placeholder_fig("Figure 9: FAR_B vs FRR trade-off\n(run episodes first)")
+    df_t = pd.read_csv(tradeoff_path).dropna(subset=["FAR_true_robust", "FRR_robust"])
+    if df_t.empty:
+        return _placeholder_fig("Figure 9: No valid robust trade-off data")
 
-    df = pd.read_csv(summary_path)
-    fig, ax = plt.subplots(figsize=(5, 4))
+    fig, ax = plt.subplots(figsize=(6, 4.5))
 
-    ax.scatter(df["FRR"], df["FAR_B"], color=COLORS["blue"], alpha=0.7,
-               label="Youden τ", s=40)
+    # Plot Youden vs Robust points per episode connected by light dashed vectors
+    for _, row in df_t.iterrows():
+        ax.annotate(
+            "",
+            xy=(row["FRR_robust"], row["FAR_true_robust"]),
+            xytext=(row["FRR_youden"], row["FAR_true_youden"]),
+            arrowprops=dict(arrowstyle="->", color="gray", alpha=0.4, lw=0.8),
+        )
 
-    # Robust threshold points if available
-    if tradeoff_path.exists():
-        df_t = pd.read_csv(tradeoff_path)
-        if "tau_robust" in df_t.columns and df_t["tau_robust"].notna().any():
-            ax.scatter(df_t["FAR_true_robust"], df_t["FAR_true_robust"],
-                       color=COLORS["orange"], marker="^", alpha=0.7,
-                       label="τ_robust", s=50)
+    ax.scatter(df_t["FRR_youden"], df_t["FAR_true_youden"],
+               color=COLORS["blue"], label="Primary τ (Youden's J)", s=45, zorder=3)
+    ax.scatter(df_t["FRR_robust"], df_t["FAR_true_robust"],
+               color=COLORS["orange"], marker="^", label="Identity-Robust τ (LOPO α=0.05)", s=55, zorder=3)
 
-    ax.set_xlabel("FRR (Known rejection rate)")
-    ax.set_ylabel("FAR_B (Final-stranger acceptance rate)")
-    ax.set_title("FAR_B vs FRR Trade-off: Youden vs τ_robust")
-    ax.legend()
+    # Centroid markers
+    ax.scatter(df_t["FRR_youden"].mean(), df_t["FAR_true_youden"].mean(),
+               color="darkblue", s=120, edgecolors="black", label="Youden Mean", zorder=4)
+    ax.scatter(df_t["FRR_robust"].mean(), df_t["FAR_true_robust"].mean(),
+               color="darkorange", marker="^", s=140, edgecolors="black", label="Robust Mean", zorder=4)
+
+    ax.set_xlabel("False Rejection Rate (FRR on Known Meters)")
+    ax.set_ylabel("False Acceptance Rate (FAR_B on True Strangers)")
+    ax.set_title("Operating Point Shift: Primary Youden τ vs Identity-Robust τ")
+    ax.legend(fontsize=8)
     ax.grid(True, linestyle="--", alpha=0.4)
     return fig
 

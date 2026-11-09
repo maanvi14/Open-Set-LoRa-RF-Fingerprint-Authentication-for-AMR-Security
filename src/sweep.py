@@ -93,8 +93,15 @@ def run_sweep_episode(
 
     scores_final_test = predict_scores(pipe, X_ftest)
 
-    # RNG for k-selection (separate from split RNG)
+    # RNG for k-selection: generate a SINGLE permutation of proxy devices so that
+    # subsets for k in [1, 3, 5, 10, 15] are nested prefixes of the same permutation
     k_rng = np.random.default_rng(seed ^ 0xDEAD)
+    proxy_perm = list(split.proxy_ids)
+    k_rng.shuffle(proxy_perm)
+
+    # Reference nominal FRR target (e.g. 25% or calibrated from full proxy set)
+    # to evaluate matched-FRR stranger penetration
+    target_frr = 0.2588 # baseline Youden FRR operating point
 
     results = []
     for k in ks:
@@ -107,14 +114,13 @@ def run_sweep_episode(
                 target_acceptance=CFG.alternative_tau_known_acceptance,
             )
             far_a = float("nan")  # no proxy_test for k=0 estimate
+            delta = float("nan")  # DeltaFAR is undefined when Condition A does not exist
         else:
-            # Sample k proxy devices for calibration
-            k_actual = min(k, len(split.proxy_ids))
-            chosen_proxy = sorted(
-                k_rng.choice(split.proxy_ids, size=k_actual, replace=False).tolist()
-            )
+            # Nested prefix: take the first k devices from the fixed permutation
+            k_actual = min(k, len(proxy_perm))
+            chosen_proxy = sorted(proxy_perm[:k_actual])
 
-            # Assertion: chosen proxy devices are NOT final-unknown devices
+            # Assertion: chosen proxy devices are strictly proxy devices, never final-unknown
             for cpid in chosen_proxy:
                 assert cpid not in split.final_unknown_ids, \
                     f"Sweep k={k}: chosen proxy {cpid} is a FINAL_UNKNOWN device!"
@@ -133,10 +139,17 @@ def run_sweep_episode(
             else:
                 far_a = float("nan")
 
+            delta = compute_delta_far(far_a, compute_far(scores_final_test, ft.tau)) if not np.isnan(far_a) else float("nan")
+
         tau = ft.tau
         far_b = compute_far(scores_final_test, tau)
         frr   = compute_frr(scores_known_test, tau)
-        delta = compute_delta_far(far_a if not np.isnan(far_a) else 0.0, far_b)
+
+        # Also compute FAR_B at matched nominal FRR
+        # (quantile of known_val corresponding to 1 - target_frr acceptance)
+        tau_matched = float(np.quantile(scores_known_val, target_frr))
+        far_b_matched_frr = compute_far(scores_final_test, tau_matched)
+        frr_matched = compute_frr(scores_known_test, tau_matched)
 
         results.append({
             "episode": episode_idx,
@@ -146,6 +159,9 @@ def run_sweep_episode(
             "FAR_B": float(far_b),
             "FRR": float(frr),
             "DeltaFAR": float(delta),
+            "tau_matched_frr": float(tau_matched),
+            "FAR_B_matched_frr": float(far_b_matched_frr),
+            "FRR_matched": float(frr_matched),
         })
 
     return results

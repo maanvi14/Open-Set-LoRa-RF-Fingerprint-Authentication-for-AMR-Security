@@ -36,9 +36,13 @@ def _get_target_h5_files() -> List[Path]:
     """Find the canonical unaugmented baseline files containing all 60 devices."""
     all_h5 = sorted(CFG.path_raw.rglob("*.h5")) + sorted(CFG.path_raw.rglob("*.hdf5"))
     primary = [f for f in all_h5 if f.name in _PRIMARY_FILES]
-    if len(primary) == len(_PRIMARY_FILES):
-        return primary
-    return all_h5
+    if len(primary) != len(_PRIMARY_FILES):
+        missing = set(_PRIMARY_FILES) - {f.name for f in primary}
+        raise FileNotFoundError(
+            f"Missing required primary unaugmented baseline file(s): {missing}. "
+            f"Found only {[f.name for f in primary]}. Refusing to fall back to augmented or channel-problem files."
+        )
+    return primary
 
 
 def discover_dataset_structure(h5_path: Path) -> Dict[str, Tuple]:

@@ -208,13 +208,27 @@ def run_one_episode(
         "AUROC_B": float(auroc_b),
         "macro_F1": float(closed_metrics["macro_f1"]),
         "accuracy": float(closed_metrics["accuracy"]),
-        "calibration_stats": ft.calibration_stats,
+        "calibration_stats": dict(ft.calibration_stats),
         "per_device_FAR_A": pdev_far_a,
         "per_device_FAR_B": pdev_far_b,
         "enrolled_ids": split.enrolled_ids,
         "proxy_ids": split.proxy_ids,
         "final_unknown_ids": split.final_unknown_ids,
     }
+
+    # Save raw scores as NPZ for honest score distribution analysis (Fig 4)
+    out_dir_ep = CFG.path_results / "episodes"
+    ensure_dir(out_dir_ep)
+    npz_path = out_dir_ep / f"raw_scores_episode_{episode_idx:03d}.npz"
+    np.savez_compressed(
+        npz_path,
+        scores_known_test=scores_known_test,
+        scores_proxy_test=scores_proxy_test,
+        scores_final_test=scores_final_test,
+        scores_known_val=scores_known_val,
+        scores_proxy_cal=scores_proxy_cal,
+        tau=float(tau),
+    )
 
     if save_model_flag:
         save_model(pipe, episode_idx)

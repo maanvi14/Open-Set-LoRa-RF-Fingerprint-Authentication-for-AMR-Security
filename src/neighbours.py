@@ -107,17 +107,21 @@ def run_neighbour_analysis(
 
     df_nb = pd.DataFrame(all_rows)
 
-    # Spearman correlation across all episodes
-    dist_col = df_nb["nearest_dist"].values
-    far_col  = df_nb["FAR_B"].values
+    # To avoid pseudo-replication from repeating the same physical transmitters across 20 episodes,
+    # aggregate to a single mean distance and mean FAR_B per unique physical device
+    df_dev = df_nb.groupby("device_id")[["nearest_dist", "FAR_B"]].mean().reset_index()
+
+    dist_col = df_dev["nearest_dist"].values
+    far_col  = df_dev["FAR_B"].values
     if len(dist_col) >= 4:
         rho, pval = spearmanr(dist_col, far_col)
     else:
         rho, pval = float("nan"), float("nan")
 
-    LOG.info("Spearman rho(distance, FAR_B) = %.4f  p=%.4f", rho, pval)
-    df_nb["spearman_rho"] = rho
-    df_nb["spearman_pval"] = pval
+    LOG.info("Device-level aggregated Spearman rho(distance, FAR_B) = %.4f  p=%.4f (n=%d unique devices)",
+             rho, pval, len(df_dev))
+    df_nb["device_level_rho"] = rho
+    df_nb["device_level_pval"] = pval
 
     ensure_dir(CFG.path_tables)
     out_path = CFG.path_tables / "neighbour_analysis.csv"

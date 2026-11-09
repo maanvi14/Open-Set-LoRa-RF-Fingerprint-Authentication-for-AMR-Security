@@ -1,4 +1,5 @@
 # Dataset and interim data (large binary archives)
+dataset/
 data/raw/
 data/interim/
 data/features/
@@ -15,3 +16,4 @@ __pycache__/
 .venv/
 venv/
 env/
+

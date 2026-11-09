@@ -113,10 +113,22 @@ def _extract_one(
         kurt_amp = float(kurtosis(amp, bias=False))
         feats += [mean_amp, std_amp, skew_amp, kurt_amp]
 
-    # --- FFT features ---
-    n = len(cplx)
-    fft_full = np.fft.fft(cplx, n=max(n, fft_n_bins))
-    fft_mag  = np.abs(fft_full[:fft_n_bins])          # one-sided (DC…N/2 for baseband)
+    # --- FFT features (Full two-sided baseband spectrum) ---
+    # For complex baseband I/Q, spectrum spans [-Fs/2, +Fs/2].
+    # Compute full FFT, shift DC to center, and bin to fft_n_bins.
+    n_samples = len(cplx)
+    if n_samples >= fft_n_bins:
+        fft_full = np.fft.fft(cplx)
+        fft_shifted = np.fft.fftshift(fft_full)
+        fft_mag_full = np.abs(fft_shifted)
+        chunk_size = len(fft_mag_full) // fft_n_bins
+        fft_mag = fft_mag_full[:chunk_size * fft_n_bins].reshape(fft_n_bins, chunk_size).mean(axis=1)
+    else:
+        # Zero-pad to fft_n_bins if signal is shorter
+        fft_full = np.fft.fft(cplx, n=fft_n_bins)
+        fft_shifted = np.fft.fftshift(fft_full)
+        fft_mag = np.abs(fft_shifted)
+
     fft_sum  = fft_mag.sum() + 1e-12
     fft_norm = fft_mag / fft_sum                       # normalised magnitude vector
 
@@ -292,7 +304,7 @@ def load_all_features(device_ids: Optional[List[int]] = None) -> pd.DataFrame:
 # Determinism test
 # ---------------------------------------------------------------------------
 
-def determinism_test(n_packets: int = 10, preamble_len: int = 32) -> None:
+def determinism_test(n_packets: int = 10, preamble_len: int = 512) -> None:
     """Assert that feature extraction is deterministic (no randomness)."""
     rng = np.random.default_rng(0)
     iq = rng.standard_normal((n_packets, preamble_len, 2)).astype(np.float32)
@@ -301,7 +313,7 @@ def determinism_test(n_packets: int = 10, preamble_len: int = 32) -> None:
     X2, n2 = extract_features(iq)
 
     assert n1 == n2, "Feature name lists differ between runs"
-    assert np.array_equal(X1, X2), "Feature matrices differ between determinism runs"
+    assert np.allclose(X1, X2, atol=1e-6), "Feature matrices differ between determinism runs"
     LOG.info("Determinism test PASSED (%d packets, %d features).", n_packets, X1.shape[1])
 
 

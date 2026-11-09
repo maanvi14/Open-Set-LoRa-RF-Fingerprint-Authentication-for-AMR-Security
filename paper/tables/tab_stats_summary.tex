@@ -1,19 +1,19 @@
 \begin{table}
 \caption{Stats Summary}
 \label{tab_stats_summary}
-\begin{tabular}{lrrrrrrr}
+\begin{tabular}{llrrrrrrrr}
 \toprule
-metric & n_episodes & mean & ci_lower_95 & ci_upper_95 & std & min & max \\
+metric & ci_type & n_samples & mean & ci_lower_95 & ci_upper_95 & std & min & max & p_value \\
 \midrule
-FAR_A & 20 & 0.170500 & 0.140700 & 0.212400 & 0.083100 & 0.088000 & 0.462100 \\
-FAR_B & 20 & 0.212800 & 0.177900 & 0.249400 & 0.080100 & 0.081000 & 0.398400 \\
-DeltaFAR & 20 & 0.042200 & 0.001600 & 0.077500 & 0.087500 & -0.223500 & 0.170000 \\
-FRR & 20 & 0.258800 & 0.232800 & 0.288500 & 0.062700 & 0.171300 & 0.379900 \\
-AUROC_A & 20 & 0.853200 & 0.832600 & 0.871100 & 0.043600 & 0.740200 & 0.916200 \\
-AUROC_B & 20 & 0.839100 & 0.822300 & 0.854700 & 0.037200 & 0.736900 & 0.894000 \\
-macro_F1 & 20 & 0.957100 & 0.954000 & 0.960000 & 0.006800 & 0.941700 & 0.968600 \\
-frac_DeltaFAR_gt_0 & 20 & 0.700000 & NaN & NaN & NaN & NaN & NaN \\
-wilcoxon_FAR_B_minus_FAR_A & 20 & 44.000000 & NaN & NaN & NaN & 0.021500 & NaN \\
+FAR_A & device_level & 60 & 0.123500 & 0.070100 & 0.187700 & 0.048400 & 0.033800 & 0.203100 & NaN \\
+FAR_B & device_level & 58 & 0.115500 & 0.070300 & 0.165300 & 0.065500 & 0.009400 & 0.245800 & NaN \\
+DeltaFAR & episode_level & 20 & 0.005600 & -0.015500 & 0.023900 & 0.044000 & -0.116600 & 0.076700 & NaN \\
+FRR & episode_level & 20 & 0.084900 & 0.071600 & 0.100600 & 0.034000 & 0.043800 & 0.193900 & NaN \\
+AUROC_A & episode_level & 20 & 0.953000 & 0.941300 & 0.962500 & 0.024000 & 0.881500 & 0.986300 & NaN \\
+AUROC_B & episode_level & 20 & 0.949000 & 0.936700 & 0.960500 & 0.028400 & 0.884600 & 0.985500 & NaN \\
+macro_F1 & episode_level & 20 & 0.994300 & 0.993200 & 0.995300 & 0.002400 & 0.987200 & 0.998100 & NaN \\
+frac_DeltaFAR_gt_0 & episode_level & 20 & 0.650000 & NaN & NaN & NaN & NaN & NaN & NaN \\
+wilcoxon_FAR_B_minus_FAR_A_episodes & episode_level & 20 & 74.000000 & NaN & NaN & NaN & NaN & NaN & 0.261100 \\
 \bottomrule
 \end{tabular}
 \end{table}

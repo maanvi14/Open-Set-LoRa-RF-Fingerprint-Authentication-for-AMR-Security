@@ -82,6 +82,9 @@ class Config:
     # Sweep
     sweep_ks: List[int] = field(default_factory=lambda: [0, 1, 3, 5, 10, 15])
 
+    # Amplitude normalisation (Shen et al. LoRa signals have mean ~0.217, not normalized to 1.0)
+    amplitude_normalised: bool = False
+
     # FFT features
     fft_n_bins: int = 256
     fft_top_m_bins: int = 10
@@ -100,7 +103,9 @@ class Config:
     def episode_seed(self, ep_idx: int) -> int:
         """Deterministic per-episode seed derived from global_seed."""
         rng = random.Random(self.global_seed)
-        seeds = [rng.randint(0, 2**31 - 1) for _ in range(self.n_episodes + 1)]
+        # Generate enough seeds up to ep_idx
+        n_needed = max(ep_idx + 1, self.n_episodes + 1)
+        seeds = [rng.randint(0, 2**31 - 1) for _ in range(n_needed)]
         return seeds[ep_idx]
 
 
@@ -127,6 +132,7 @@ def _build_config() -> Config:
         lopo_alpha=r.get("lopo_alpha", 0.05),
         lopo_percentile=r.get("lopo_percentile", 90),
         sweep_ks=r.get("sweep_ks", [0, 1, 3, 5, 10, 15]),
+        amplitude_normalised=r.get("amplitude_normalised", False),
         fft_n_bins=r.get("fft_n_bins", 256),
         fft_top_m_bins=r.get("fft_top_m_bins", 10),
         fft_subbands=r.get("fft_subbands", 4),

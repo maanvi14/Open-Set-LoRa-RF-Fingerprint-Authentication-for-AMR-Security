@@ -13,7 +13,7 @@ To set that threshold, engineers need example strangers. So they borrow some unf
 > **Research question:** With classifier, features, and frozen threshold held identical, how much does measured false acceptance change when test strangers are *familiar* (packet-disjoint) vs *true* (identity-disjoint)?
 >
 > We call the difference the **Familiarity Gap**:
-> `ΔF​AR = FAR(identity-disjoint) − FAR(packet-disjoint)`
+> `ΔFAR = FAR(identity-disjoint) − FAR(packet-disjoint)`
 
 ---
 
@@ -24,14 +24,28 @@ To set that threshold, engineers need example strangers. So they borrow some unf
 - First open-set LoRa authentication
 - Any new RFF method
 
-### We DO claim (potential methodological/measurement contribution; literature check still required):
-1. A **controlled paired A/B protocol** on a calibrated, frozen threshold: same classifier + same features + same threshold + same known-device test packets; only the identity of unknown test devices changes.
-2. A **named, quantified metric** (Familiarity Gap, ΔF​AR) with **device-level confidence intervals** (bootstrap over devices, not packets).
-3. A **proxy-count sweep**: how does ΔF​AR change as calibration uses 0, 1, 3, 5, 10, or 15 proxy devices?
-4. A **hardness explanation**: per-device FAR, nearest-enrolled-neighbour distance vs FAR, and hardware-model analysis where documented.
-5. Built-in **leakage audit** (automated assertions + pytest).
-6. **AMR-gateway framing** as a screening layer that complements cryptographic authentication.
-7. A **remedy test (LOPO)**: Leave-One-Proxy-Out calibration — using only proxy data, estimate FAR on a held-out identity and test whether this estimate is less optimistic than the naive packet-disjoint estimate.
+### We DO claim:
+1. A **controlled paired A/B protocol** on a calibrated, frozen threshold: same classifier + same 292 baseband features + same threshold + same known-device test packets; only the identity of unknown test devices changes.
+2. A **device-matched paired design**: evaluating the exact same physical devices on identical test packets at $\tau_{\text{full}}$ vs. $\tau_{(-j)}$ to eliminate device-composition confounding ($\Delta\text{FAR}_{\text{matched}} = +1.47\%$, $95\%$ device-level bootstrap CI: $[+0.72\%, +2.40\%]$).
+3. A **named, quantified metric** (Familiarity Gap, $\Delta\text{FAR}$) with **device-level confidence intervals** resampled over physical devices ($\text{FAR}_A = 12.35\%$, $95\%$ CI: $[7.01\%, 18.77\%]$; $\text{FAR}_B = 11.55\%$, $95\%$ CI: $[7.03\%, 16.53\%]$).
+4. A **proxy-count sweep ($k \in \{0, 1, 3, 5, 10, 15\}$)** with nested prefixes and matched-FRR evaluation, demonstrating acute single-proxy distortion ($k=1$ yields $+19.41\%$ gap).
+5. A **hardness and hardware grouping explanation**: per-device vulnerability ranges from $0.0\%$ to $98.5\%$, with top vulnerable devices clustering tightly within hardware block 4 (IDs 46–60).
+6. An **identity-robust threshold ($\tau_{\text{robust}}$) trade-off**: reduces true stranger penetration from $11.55\%$ to $4.17\%$ at the cost of FRR surging from $8.49\%$ to $30.18\%$.
+7. A **Leave-One-Proxy-Out (LOPO) calibration remedy**: identity-disjoint validation protocol evaluated against naive packet-disjoint testing.
+
+---
+
+## Key Empirical Findings
+
+| Evaluation Metric | Condition / Method | Value | 95% Confidence Interval |
+|---|---|---|---|
+| **$\text{FAR}_A$ (Familiar Strangers)** | Packet-disjoint test | 12.35% | [7.01%, 18.77%] (device bootstrap) |
+| **$\text{FAR}_B$ (True Strangers)** | Identity-disjoint test | 11.55% | [7.03%, 16.53%] (device bootstrap) |
+| **$\Delta\text{FAR}_{\text{matched}}$** | Device-matched paired | **+1.47%** | **[+0.72%, +2.40%]** (device bootstrap) |
+| **Single-proxy distortion ($k=1$)** | Proxy sweep | **+19.41%** | $\text{FAR}_A = 2.67\%$, $\text{FAR}_B = 22.08\%$ |
+| **Robust threshold ($\tau_{\text{robust}}$)** | 90th-pctile proxy rejection | $\text{FAR}_B: 11.55\% \to 4.17\%$ | FRR surges from $8.49\%$ to $30.18\%$ |
+| **Closed-Set Macro $F_1$** | Enrolled authentication | 99.43% | [99.32%, 99.53%] |
+| **Open-Set AUROC** | Identity-disjoint | 0.9490 | [0.9367, 0.9605] |
 
 ---
 
@@ -65,7 +79,7 @@ To set that threshold, engineers need example strangers. So they borrow some unf
                      │  Condition B (identity-disjoint)              │
                      │  FAR on FINAL_TEST                            │
                      └───────────────────────────────────────────────┘
-                                      ΔF​AR = FAR_B − FAR_A
+                                      ΔFAR = FAR_B − FAR_A
 ```
 
 ---

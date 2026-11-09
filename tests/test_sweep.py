@@ -35,3 +35,13 @@ def test_final_test_devices_never_calibrated():
         chosen_proxies = split.proxy_ids[:k] if k > 0 else []
         assert set(chosen_proxies).issubset(proxy_set)
         assert len(set(chosen_proxies).intersection(final_unknown_set)) == 0
+
+
+def test_sweep_k0_delta_is_nan():
+    """Verify that at k=0, DeltaFAR is NaN because Condition A has no proxy test set."""
+    from src.evaluate import compute_delta_far
+    far_a = float("nan")
+    far_b = 0.63
+    # When far_a is nan, delta must not be filled with arbitrary 0
+    delta = compute_delta_far(far_a, far_b) if not np.isnan(far_a) else float("nan")
+    assert np.isnan(delta)

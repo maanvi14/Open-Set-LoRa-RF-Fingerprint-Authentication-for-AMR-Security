@@ -17,7 +17,18 @@ import numpy as np
 # FrozenThreshold immutable dataclass
 # ---------------------------------------------------------------------------
 
-@dataclass
+import types
+from dataclasses import dataclass
+from typing import Any, Dict, Mapping, Optional
+
+import numpy as np
+
+
+# ---------------------------------------------------------------------------
+# FrozenThreshold immutable dataclass
+# ---------------------------------------------------------------------------
+
+@dataclass(frozen=True)
 class FrozenThreshold:
     """
     Immutable threshold container.
@@ -26,11 +37,22 @@ class FrozenThreshold:
     ----------
     tau           : calibrated decision threshold
     method        : 'youden' or 'known_acceptance'
-    calibration_stats : dict with diagnostic info
+    calibration_stats : read-only mapping with diagnostic info
     """
     tau: float
     method: str
-    calibration_stats: Dict[str, Any]
+    calibration_stats: Mapping[str, Any]
+
+    def __post_init__(self):
+        # Ensure tau is float, method is str, and calibration_stats is a read-only MappingProxy
+        object.__setattr__(self, "tau", float(self.tau))
+        object.__setattr__(self, "method", str(self.method))
+        if not isinstance(self.calibration_stats, types.MappingProxyType):
+            object.__setattr__(
+                self,
+                "calibration_stats",
+                types.MappingProxyType(dict(self.calibration_stats))
+            )
 
     def accept(self, score: float) -> bool:
         """Return True if score >= tau (device is accepted as enrolled)."""
@@ -39,17 +61,6 @@ class FrozenThreshold:
     def accept_array(self, scores: np.ndarray) -> np.ndarray:
         """Boolean array: True where scores >= tau."""
         return scores >= self.tau
-
-    def __setattr__(self, name: str, value: Any) -> None:
-        if hasattr(self, name):
-            raise AttributeError(
-                f"FrozenThreshold is immutable. Cannot set '{name}'. "
-                "The threshold is frozen after calibration and must never be changed using test data."
-            )
-        super().__setattr__(name, value)
-
-    def __delattr__(self, name: str) -> None:
-        raise AttributeError("FrozenThreshold is immutable.")
 
 
 # ---------------------------------------------------------------------------
@@ -70,20 +81,19 @@ def _youden_j(
     all_scores = np.concatenate([scores_known, scores_unknown])
     candidates = np.linspace(all_scores.min(), all_scores.max(), n_candidates)
 
-    best_j = -np.inf
-    best_tau = float(candidates[0])
-
     j_values = []
     for tau in candidates:
         tpr = float(np.mean(scores_known >= tau))     # sensitivity
         tnr = float(np.mean(scores_unknown < tau))    # specificity
         j = tpr + tnr - 1.0
         j_values.append(j)
-        if j > best_j:
-            best_j = j
-            best_tau = float(tau)
 
     j_arr = np.array(j_values)
+    max_j = j_arr.max()
+    # Handle ties: pick the median candidate among all that achieve maximum J (within numerical tolerance)
+    best_indices = np.where(np.isclose(j_arr, max_j, atol=1e-6))[0]
+    best_tau = float(np.median(candidates[best_indices]))
+    best_j = float(max_j)
     stats = {
         "youden_j": float(best_j),
         "n_candidates": n_candidates,

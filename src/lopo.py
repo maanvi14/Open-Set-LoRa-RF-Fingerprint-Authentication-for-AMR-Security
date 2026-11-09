@@ -86,6 +86,21 @@ def run_lopo_episode(
     X_ftest, _ = build_xy(df_ftest, feat_cols)
     scores_final_all = predict_scores(pipe, X_ftest)
 
+    # KNOWN_TEST scores (for FRR evaluation — never used for fitting)
+    df_ktest = _subset_df(df_all, split.enrolled_ids, split.enrolled_known_test_idx)
+    X_ktest, _ = build_xy(df_ktest, feat_cols)
+    scores_known_test = predict_scores(pipe, X_ktest)
+
+    # Gather PROXY_TEST scores per proxy device (for matched-device analysis)
+    proxy_test_scores: Dict[int, np.ndarray] = {}
+    for dev_id in split.proxy_ids:
+        df_pt = _subset_df(df_all, [dev_id], {dev_id: split.proxy_test_idx[dev_id]})
+        if len(df_pt) > 0:
+            X_pt, _ = build_xy(df_pt, feat_cols)
+            proxy_test_scores[dev_id] = predict_scores(pipe, X_pt)
+        else:
+            proxy_test_scores[dev_id] = np.array([])
+
     # --- Full-data tau (for resubstitution and naive packet-disjoint) ---
     all_proxy_cal_scores = np.concatenate(list(proxy_cal_scores.values()))
     if len(all_proxy_cal_scores) == 0:
@@ -97,23 +112,21 @@ def run_lopo_episode(
     far_resub = compute_far(all_proxy_cal_scores, tau_full)
 
     # Naive packet-disjoint (Condition A): PROXY_TEST at tau_full
-    df_ptest = _subset_df(df_all, split.proxy_ids, split.proxy_test_idx)
-    X_ptest, _ = build_xy(df_ptest, feat_cols)
-    scores_proxy_test = predict_scores(pipe, X_ptest)
-    far_naive = compute_far(scores_proxy_test, tau_full)
+    all_proxy_test_scores = np.concatenate(list(proxy_test_scores.values()))
+    far_naive = compute_far(all_proxy_test_scores, tau_full)
 
     # True stranger FAR at tau_full (FINAL_TEST reference)
     far_true_full = compute_far(scores_final_all, tau_full)
 
-    # --- LOPO folds ---
+    # --- LOPO folds and Matched Device Evaluation ---
     lopo_folds = []
+    matched_device_rows = []
     held_out_devices = split.proxy_ids  # 15 devices
 
     for j, held_id in enumerate(held_out_devices):
         # Assertion: held_id is a proxy device (never final_unknown)
         assert held_id not in split.final_unknown_ids, \
             f"LOPO fold {j}: held-out device {held_id} is a FINAL_UNKNOWN device!"
-        assert held_id not in split.proxy_test_idx or True, "proxy_test not used in fitting"
 
         # Calibrate on the OTHER 14 proxy devices' PROXY_CAL
         other_ids = [pid for pid in held_out_devices if pid != held_id]
@@ -128,12 +141,30 @@ def run_lopo_episode(
         ft_j = calibrate_threshold(scores_known_val, other_scores, method="youden")
         tau_j = ft_j.tau
 
-        # est_j: fraction of held-out PROXY_CAL accepted at tau_j
+        # est_j: fraction of held-out PROXY_CAL accepted at tau_j (unfamiliar to tau_j)
         hd_scores = proxy_cal_scores[held_id]
         est_j = compute_far(hd_scores, tau_j) if len(hd_scores) > 0 else float("nan")
 
         # truth_j: FAR on FINAL_TEST at tau_j (evaluation only, not fitting)
         truth_j = compute_far(scores_final_all, tau_j)
+
+        # Device-matched evaluation on held-out device's PROXY_TEST packets:
+        # Same physical device and same test packets evaluated at:
+        # 1) tau_full: familiar (device participated in calibration of tau_full)
+        # 2) tau_j: unfamiliar (device was strictly excluded from calibration of tau_j)
+        pt_scores = proxy_test_scores.get(held_id, np.array([]))
+        if len(pt_scores) > 0:
+            far_familiar_pt = compute_far(pt_scores, tau_full)
+            far_unfamiliar_pt = compute_far(pt_scores, tau_j)
+            matched_device_rows.append({
+                "episode": episode_idx,
+                "device_id": held_id,
+                "tau_familiar": float(tau_full),
+                "tau_unfamiliar": float(tau_j),
+                "far_familiar": float(far_familiar_pt),
+                "far_unfamiliar": float(far_unfamiliar_pt),
+                "delta_far_matched": float(far_unfamiliar_pt - far_familiar_pt),
+            })
 
         lopo_folds.append({
             "fold": j,
@@ -152,14 +183,19 @@ def run_lopo_episode(
     df_folds = pd.DataFrame(lopo_folds)
     lopo_est  = float(df_folds["est_j"].dropna().mean())
     lopo_truth = float(df_folds["truth_j"].dropna().mean())
-    lopo_bias  = float(df_folds["bias_j"].dropna().mean())
-    lopo_abs   = float(df_folds["abs_error_j"].dropna().mean())
+    lopo_bias  = float(lopo_est - lopo_truth)
+    lopo_abs   = float(abs(lopo_est - lopo_truth))
     lopo_var   = float(df_folds["bias_j"].dropna().var())
 
     # --- Robust threshold: smallest tau such that worst/90th-pctile held-out FAR <= alpha ---
     tau_robust = _compute_tau_robust(
         scores_known_val, proxy_cal_scores, held_out_devices, alpha, percentile
     )
+
+    # Evaluate FAR_B and FRR at tau_robust and tau_full
+    far_true_robust = compute_far(scores_final_all, tau_robust) if tau_robust is not None else float("nan")
+    frr_youden = compute_frr(scores_known_test, tau_full)
+    frr_robust = compute_frr(scores_known_test, tau_robust) if tau_robust is not None else float("nan")
 
     result = {
         "episode_idx": episode_idx,
@@ -168,12 +204,16 @@ def run_lopo_episode(
         "far_resub": float(far_resub),
         "far_naive": float(far_naive),
         "far_true_full": float(far_true_full),
+        "far_true_robust": float(far_true_robust),
+        "frr_youden": float(frr_youden),
+        "frr_robust": float(frr_robust),
         "lopo_est": float(lopo_est),
         "lopo_truth": float(lopo_truth),
         "lopo_bias": float(lopo_bias),
         "lopo_abs_error": float(lopo_abs),
         "lopo_variance": float(lopo_var),
         "folds": lopo_folds,
+        "matched_device_rows": matched_device_rows,
     }
     return result
 
@@ -234,6 +274,7 @@ def run_lopo_all(
 
     bias_rows = []
     tradeoff_rows = []
+    all_matched_device_rows = []
 
     for ep_idx in tqdm(range(n_episodes), desc="LOPO episodes"):
         try:
@@ -271,22 +312,25 @@ def run_lopo_all(
                 "tau_youden": res["tau_full"],
                 "tau_robust": res["tau_robust"],
                 "FAR_true_youden": res["far_true_full"],
-                "FAR_true_robust": compute_far(
-                    # recompute for tau_robust if available
-                    np.array([]),  # placeholder; will be filled properly in real run
-                    res["tau_robust"] or res["tau_full"],
-                ),
+                "FAR_true_robust": res["far_true_robust"],
+                "FRR_youden": res["frr_youden"],
+                "FRR_robust": res["frr_robust"],
             })
+            if "matched_device_rows" in res:
+                all_matched_device_rows.extend(res["matched_device_rows"])
         except Exception as exc:
             LOG.error("LOPO episode %d FAILED: %s", ep_idx, exc, exc_info=True)
 
     df_bias = pd.DataFrame(bias_rows)
     df_tradeoff = pd.DataFrame(tradeoff_rows)
+    df_matched = pd.DataFrame(all_matched_device_rows)
 
     ensure_dir(CFG.path_tables)
     df_bias.to_csv(CFG.path_tables / "lopo_bias.csv", index=False)
     df_tradeoff.to_csv(CFG.path_tables / "threshold_tradeoff.csv", index=False)
-    LOG.info("LOPO results saved.")
+    if not df_matched.empty:
+        df_matched.to_csv(CFG.path_tables / "matched_device_evaluation.csv", index=False)
+    LOG.info("LOPO and Matched-Device results saved.")
 
     return df_bias, df_tradeoff
 
