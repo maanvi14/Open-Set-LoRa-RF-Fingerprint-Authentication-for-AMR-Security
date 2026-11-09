@@ -135,6 +135,9 @@ We discover and document the non-linear scaling law of outlier exposure in physi
 #### 6. Quantification of the Identity-Robust Threshold ($\tau_{\text{robust}}$) Trade-off in AMR Systems
 We compute for the first time the real-world operational penalty of identity-robust thresholding: while $\tau_{\text{robust}}$ successfully drops true stranger penetration from $11.55\%$ to $4.17\%$, it causes False Rejection Rate ($\text{FRR}$) to surge to $30.18\%$ (peaking at $84.63\%$). This demonstrates that in battery-operated AMR networks, robust RFF cannot serve as an impenetrable perimeter gate and must be framed as a defense-in-depth screening layer.
 
+#### 7. Multi-Packet Burst Decision Fusion for Operational Grid Reliability
+We discover and evaluate temporal multi-packet decision fusion ($L \in \{1, 3, 5\}$ consecutive frames) as an architectural bridge between physical screening and utility grid availability. We demonstrate that averaging confidence over a 5-packet burst cuts legitimate meter false rejection by more than half (from $8.49\%$ to $3.54\%$), elevating AMR network availability to $96.46\%$ while raising open-set discrimination to $\text{AUROC} = 0.9670$.
+
 ---
 
 ## 4. Intuitive Real-World Example & Attack Scenario

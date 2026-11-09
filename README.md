@@ -35,6 +35,7 @@ To set that threshold, engineers need example strangers. So they borrow some unf
 6. **Hardness & Hardware Grouping:** Per-device vulnerability ranges from $0.0\%$ to $98.5\%$, with top vulnerable devices clustering tightly within hardware block 4 (IDs 46–60).
 7. **Availability Cost of Robust Thresholding ($\tau_{\text{robust}}$):** Reduces true stranger penetration from $11.55\%$ to $4.17\%$ at the cost of FRR surging from $8.49\%$ to $30.18\%$.
 8. **Leave-One-Proxy-Out (LOPO) Remedy:** Cross-validated threshold calibration protocol evaluated against naive testing.
+9. **Multi-Packet Burst Decision Fusion ($L \in \{1, 3, 5\}$):** Temporal fusion cuts legitimate false rejection from $8.49\%$ to $3.54\%$ (boosting availability to $96.46\%$) while elevating open-set discrimination to $\text{AUROC} = 0.9670$.
 
 ---
 

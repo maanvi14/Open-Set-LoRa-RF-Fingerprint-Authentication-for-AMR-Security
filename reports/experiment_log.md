@@ -107,6 +107,12 @@
 - **LOPO Absolute Error:** $0.0327$
 - Absolute estimation error between LOPO and naive testing is within empirical noise.
 
+### 5.7 Multi-Packet Burst Decision Fusion ($L \in \{1, 3, 5\}$)
+- **Single-Packet Baseline ($L=1$):** $\text{FAR}_B = 11.90\%$, $\text{FRR} = 8.49\%$, $\Delta\text{FAR} = +0.56\%$, $\text{AUROC} = 0.9490$.
+- **3-Packet Burst Fusion ($L=3$):** $\text{FAR}_B = 11.22\%$, $\text{FRR} = 4.37\%$, $\Delta\text{FAR} = +1.27\%$, $\text{AUROC} = 0.9642$.
+- **5-Packet Burst Fusion ($L=5$):** $\text{FAR}_B = 10.45\%$, $\text{FRR} = 3.54\%$, $\Delta\text{FAR} = +1.64\%$, $\text{AUROC} = 0.9670$.
+- **Conclusion:** Temporal fusion cuts legitimate false rejection by more than half (to $3.54\%$) while elevating AUROC to $0.9670$ and expanding the clean familiarity gap.
+
 ---
 
 ## 6. Generated Figures & Tables (Phase 9 & 10)
@@ -121,7 +127,10 @@
   - `fig7_sweep_plot`
   - `fig8_estimator_bias`
   - `fig9_tradeoff` (Generated from real $(\text{FRR}, \text{FAR})$ pairs)
+  - `fig10_burst_aggregation` (Multi-packet burst scaling dual-axis curve)
 - **Tables (`results/tables/` and `paper/tables/` LaTeX):**
+  - `burst_aggregation_summary.csv`
+  - `burst_aggregation_results.csv`
   - `episode_summary.csv` (`tab_episode_summary.tex`)
   - `stats_summary.csv` (`tab_stats_summary.tex`)
   - `matched_device_evaluation.csv`
