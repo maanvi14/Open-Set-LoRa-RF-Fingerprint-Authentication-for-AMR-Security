@@ -11,7 +11,7 @@
 \usepackage{tabularx}
 \usepackage{url}
 
-\graphicspath{{../results/figures/}}
+\graphicspath{{../results/figures/}{./}{figures/}}
 
 \begin{document}
 
@@ -26,7 +26,7 @@
 \maketitle
 
 \begin{abstract}
-Radio Frequency Fingerprint Identification (RFFI) provides a complementary physical-layer authentication mechanism for Automatic Meter Reading (AMR) gateways by exploiting hardware-inherent transceiver imperfections. In open-set deployments, gateways calibrate an acceptance threshold $\tau$ using borrowed proxy transmitters and then report false acceptance rates measured on held-out packets from those same radios. We identify a fundamental flaw in this practice---textbf{The Familiar Stranger Problem}: because the threshold was tuned against these proxy devices, they are no longer true strangers, and the reported security is artificially optimistic.
+Radio Frequency Fingerprint Identification (RFFI) provides a complementary physical-layer authentication mechanism for Automatic Meter Reading (AMR) gateways by exploiting hardware-inherent transceiver imperfections. In open-set deployments, gateways calibrate an acceptance threshold $\tau$ using borrowed proxy transmitters and then report false acceptance rates measured on held-out packets from those same radios. We identify a fundamental flaw in this practice---\textbf{The Familiar Stranger Problem}: because the threshold was tuned against these proxy devices, they are no longer true strangers, and the reported security is artificially optimistic.
 
 Our most striking finding concerns \textbf{proxy-count sensitivity}. Evaluating across 20 seeded episodes on the 60-device LoRa RFFI benchmark (26,000 packets, 292 complex baseband features, strictly frozen threshold), we show that \textbf{single-proxy calibration ($k=1$) creates a dangerous $+19.41\%$ blind spot}: familiar testing reports $\text{FAR}_A = 2.67\%$, but true physical strangers penetrate at $\text{FAR}_B = 22.08\%$. This distortion stabilizes only at $k \ge 5$ proxy devices. To isolate the familiarity effect from device-composition differences, we introduce a \textbf{device-matched paired design} evaluating identical devices on identical packets under familiar ($\tau_{\text{full}}$) versus unfamiliar ($\tau_{(-j)}$) calibration, revealing a modest but statistically significant gap of $\Delta\text{FAR}_{\text{matched}} = +1.47\%$ ($95\%$ device-level bootstrap CI: $[+0.72\%, +2.40\%]$).
 
