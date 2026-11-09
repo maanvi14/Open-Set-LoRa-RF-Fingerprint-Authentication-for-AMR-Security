@@ -1,7 +1,4 @@
 # Packet-Disjoint vs Identity-Disjoint Evaluation of Open-Set LoRa RF Fingerprint Authentication for AMR Gateway Security
-### "The Familiar Stranger Problem" in Physical-Layer Device Authentication
-
-> **Conference target:** ESDA 2026
 
 ---
 
