@@ -207,22 +207,22 @@ The following table contrasts the actual empirical numbers reported by key exist
 | Dimension / Metric | Shen et al. (2022) | Hanna et al. (2021) | Zhang et al. (2024) | Cai et al. (2025) | Ma et al. (2025) | **OUR WORK (2026)** |
 |---|---|---|---|---|---|---|
 | **Wireless Protocol** | LoRa (SX1276) | Wi-Fi / Zigbee | LoRa | LoRa | Wi-Fi | **LoRa (SX1276 COTS)** |
-| **Physical Device Count ($N$)** | 60 radios | 50 radios | 40 radios | 45 radios | 54 radios | **60 radios (USRP N210)** |
+| **Physical Device Count (N)** | 60 radios | 50 radios | 40 radios | 45 radios | 54 radios | **60 radios (USRP N210)** |
 | **Feature Dimension** | 128 (metric latent) | Deep Metric latent | CNN feature map | Contrastive latent | 64 (prototype space) | **292 complex baseband features** |
-| **Closed-Set Accuracy / F1** | $\approx 95.33\%$ | $\approx 98\%$ (same day) | $93.85\%$ | $96.2\%$ | $94.7\%$ | **$99.43\% \pm 0.24\%$ Macro-F1** |
-| **Open-Set AUROC / Detection** | Reported ROC curves | $\approx 80\% - 98\%$ | $90.23\%$ | $\approx 92.5\%$ | $91.3\%$ | **$0.9490$ (AUROC$_B$), $0.9530$ (AUROC$_A$)** |
-| **Familiar False Acceptance ($\text{FAR}_A$)** | Not isolated | Not isolated | Not isolated | Not isolated | Not isolated | **$12.35\%$** (95% CI: $[7.01\%, 18.77\%]$) |
-| **True Stranger Penetration ($\text{FAR}_B$)** | $\approx 5\% - 15\%$ (uncalibrated) | Varying threshold | Uncalibrated OpenMax | Distance threshold | Distance threshold | **$11.55\%$** (95% CI: $[7.03\%, 16.53\%]$) |
-| **Uncalibrated Single-Proxy ($k=1$) $\text{FAR}_B$** | Not evaluated | Not evaluated | Not evaluated | Not evaluated | Not evaluated | **$22.08\%$** (vs. $\text{FAR}_A = 2.67\%$) |
-| **Calibrated Familiarity Gap ($\Delta\text{FAR}$)** | None reported | None reported | None reported | None reported | None reported | **$+1.47\%$** (95% CI: $[+0.72\%, +2.40\%]$ matched) |
-| **Maximum Single-Proxy Gap ($\Delta\text{FAR}_{k=1}$)** | None reported | None reported | None reported | None reported | None reported | **$+19.41\%$** (acute threshold overfitting) |
-| **False Rejection Rate ($\text{FRR}$) at Baseline** | Not controlled | DET curve trade-off | $\approx 6.15\%$ | $\approx 5.5\%$ | $\approx 7.2\%$ | **$8.49\%$** (95% CI: $[7.16\%, 10.06\%]$) |
-| **Robust Remedy Acceptance ($\text{FAR}_{\text{robust}}$)** | Not provided | Not provided | Not provided | Not provided | Not provided | **$4.17\%$** (drops penetration by $64\%$) |
-| **Robust Availability Penalty ($\text{FRR}_{\text{robust}}$)** | Not quantified | Not quantified | Not quantified | Not quantified | Not quantified | **$30.18\%$** (surge of $+21.69\%$, peak $84.63\%$) |
-| **Multi-Packet Burst Fusion ($L=5$)** | Not evaluated | Not evaluated | Not evaluated | Not evaluated | Not evaluated | **$\text{FRR} \to 3.54\%$, $\text{AUROC} \to 0.9670$** |
-| **Hardware Clustering Effect** | Mentioned model bias | None reported | None reported | None reported | None reported | **$7/8$ hardest radios in Block 4 (46–60)** |
-| **Spearman $\rho$ (Non-Pseudoreplicated)** | $p < 0.001$ (pooled) | None reported | None reported | None reported | None reported | **$\rho = 0.2097$ ($p = 0.1142, n=58$)** |
-| **Unbiased Estimator Error (LOPO vs Naive)** | Not evaluated | Not evaluated | Not evaluated | Not evaluated | Not evaluated | **$0.0327$ (LOPO) vs $0.0323$ (Naive)** |
+| **Closed-Set Accuracy / F1** | ≈ 95.33% | ≈ 98% (same day) | 93.85% | 96.2% | 94.7% | **99.43% ± 0.24% Macro-F1** |
+| **Open-Set AUROC / Detection** | Reported ROC curves | ≈ 80% – 98% | 90.23% | ≈ 92.5% | 91.3% | **0.9490 (AUROC_B), 0.9530 (AUROC_A)** |
+| **Familiar False Acceptance (FAR_A)** | Not isolated | Not isolated | Not isolated | Not isolated | Not isolated | **12.35%** (95% CI: [7.01%, 18.77%]) |
+| **True Stranger Penetration (FAR_B)** | ≈ 5% – 15% (uncalibrated) | Varying threshold | Uncalibrated OpenMax | Distance threshold | Distance threshold | **11.55%** (95% CI: [7.03%, 16.53%]) |
+| **Uncalibrated Single-Proxy (k=1) FAR_B** | Not evaluated | Not evaluated | Not evaluated | Not evaluated | Not evaluated | **22.08%** (vs. FAR_A = 2.67%) |
+| **Calibrated Familiarity Gap (ΔFAR)** | None reported | None reported | None reported | None reported | None reported | **+1.47%** (95% CI: [+0.72%, +2.40%] matched) |
+| **Maximum Single-Proxy Gap (ΔFAR_k1)** | None reported | None reported | None reported | None reported | None reported | **+19.41%** (acute threshold overfitting) |
+| **False Rejection Rate (FRR) at Baseline** | Not controlled | DET curve trade-off | ≈ 6.15% | ≈ 5.5% | ≈ 7.2% | **8.49%** (95% CI: [7.16%, 10.06%]) |
+| **Robust Remedy Acceptance (FAR_robust)** | Not provided | Not provided | Not provided | Not provided | Not provided | **4.17%** (drops penetration by 64%) |
+| **Robust Availability Penalty (FRR_robust)** | Not quantified | Not quantified | Not quantified | Not quantified | Not quantified | **30.18%** (surge of +21.69%, peak 84.63%) |
+| **Multi-Packet Burst Fusion (L=5)** | Not evaluated | Not evaluated | Not evaluated | Not evaluated | Not evaluated | **FRR → 3.54%, AUROC → 0.9670** |
+| **Hardware Clustering Effect** | Mentioned model bias | None reported | None reported | None reported | None reported | **7/8 hardest radios in Block 4 (46–60)** |
+| **Spearman ρ (Non-Pseudoreplicated)** | p < 0.001 (pooled) | None reported | None reported | None reported | None reported | **ρ = 0.2097 (p = 0.1142, n=58)** |
+| **Unbiased Estimator Error (LOPO vs Naive)** | Not evaluated | Not evaluated | Not evaluated | Not evaluated | Not evaluated | **0.0327 (LOPO) vs 0.0323 (Naive)** |
 
 ### Critical Literature Distinctions:
 1. **Shen et al. (2022):** Created the 60-device benchmark dataset. They proved that rogue devices sharing the exact hardware model of enrolled radios are hardest to detect. However, they did not isolate the familiarity bias on a frozen calibration threshold, nor did they conduct proxy sweeps or device-level confidence bounds.
