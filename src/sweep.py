@@ -39,7 +39,10 @@ from src.utils import ensure_dir, get_logger, save_json
 
 LOG = get_logger(__name__)
 
-SWEEP_COLS = ["episode", "k", "tau", "FAR_A", "FAR_B", "FRR", "DeltaFAR"]
+SWEEP_COLS = [
+    "episode", "k", "tau", "FAR_A", "FAR_B", "FRR", "DeltaFAR",
+    "tau_matched_frr", "FAR_B_matched_frr", "FRR_matched",
+]
 
 
 def run_sweep_episode(

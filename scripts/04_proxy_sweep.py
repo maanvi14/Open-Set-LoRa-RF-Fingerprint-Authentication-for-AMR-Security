@@ -35,8 +35,11 @@ def main() -> None:
         ks=args.ks,
         smoke=args.smoke,
     )
-    print("\n=== Sweep Summary ===")
+    print("\n=== Sweep Summary (Youden Operating Point) ===")
     print(df.groupby("k")[["FAR_A", "FAR_B", "FRR", "DeltaFAR"]].mean().to_string())
+    if "FAR_B_matched_frr" in df.columns:
+        print("\n=== Matched-FRR Summary (Controlled Operating Point) ===")
+        print(df.groupby("k")[["tau_matched_frr", "FRR_matched", "FAR_B_matched_frr"]].mean().to_string())
     print(f"\nFull results: {CFG.path_results / 'sweep' / 'sweep_results.csv'}")
 
 
