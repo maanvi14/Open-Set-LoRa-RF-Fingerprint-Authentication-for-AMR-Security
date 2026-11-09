@@ -34,6 +34,7 @@
 | **Legitimate FRR at Baseline** | Not controlled | DET curve trade-off | $\approx 6.15\%$ | $\approx 5.5\%$ | $\approx 7.2\%$ | **$8.49\%$** (95% CI: $[7.16\%, 10.06\%]$) |
 | **Robust Remedy Penetration ($\text{FAR}_{\text{robust}}$)** | Not provided | Not provided | Not provided | Not provided | Not provided | **$4.17\%$** (drops intrusion by $64\%$) |
 | **Robust Availability Cost ($\text{FRR}_{\text{robust}}$)** | Not quantified | Not quantified | Not quantified | Not quantified | Not quantified | **$30.18\%$** (surge of $+21.69\%$, peak $84.63\%$) |
+| **Multi-Packet Burst Fusion ($L=5$)** | Not evaluated | Not evaluated | Not evaluated | Not evaluated | Not evaluated | **$\text{FRR} \to 3.54\%$, $\text{AUROC} \to 0.9670$** |
 | **Hardware Clustering Confound** | Mentioned model bias | None reported | None reported | None reported | None reported | **$7/8$ hardest radios in Block 4 (46–60)** |
 | **Spearman $\rho$ (Device-Aggregated)** | $p < 0.001$ (pseudo-rep) | None reported | None reported | None reported | None reported | **$\rho = 0.2097$ ($p = 0.1142, n=58$)** |
 | **Unbiased Estimator Error (LOPO vs Naive)** | Not evaluated | Not evaluated | Not evaluated | Not evaluated | Not evaluated | **$0.0327$ (LOPO) vs $0.0323$ (Naive)** |

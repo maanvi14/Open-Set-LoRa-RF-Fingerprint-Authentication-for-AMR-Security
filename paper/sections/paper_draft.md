@@ -146,6 +146,14 @@ Evaluating an identity-robust threshold enforcing 90th-percentile proxy rejectio
 ### 5.6 Leave-One-Proxy-Out (LOPO) Remedy
 LOPO cross-validation across the 15 proxy devices produces an average bias of $+0.0138$ with an absolute estimation error of $0.0327$, compared to naive packet-disjoint absolute error of $0.0323$. Because the difference is within noise, LOPO provides a mathematically sound protocol without claiming artificial variance reduction over small sample sizes.
 
+### 5.7 Multi-Packet Burst Decision Fusion ($L \in \{1, 3, 5\}$)
+In real-world AMR networks, smart utility meters transmit periodic meter telemetry or short packet retransmission bursts. To evaluate whether temporal burst aggregation overcomes the single-packet baseline limitations, we evaluate multi-packet decision fusion by averaging decision confidence over $L$ consecutive packet transmissions per physical device across all 20 evaluation episodes:
+- **Single-Packet Baseline ($L=1$):** $\text{FAR}_B = 11.90\%$, $\text{FRR} = 8.49\%$, $\Delta\text{FAR} = +0.56\%$, $\text{AUROC} = 0.9490$.
+- **3-Packet Burst Fusion ($L=3$):** $\text{FAR}_B = 11.22\%$, $\text{FRR} = 4.37\%$, $\Delta\text{FAR} = +1.27\%$, $\text{AUROC} = 0.9642$.
+- **5-Packet Burst Fusion ($L=5$):** $\text{FAR}_B = 10.45\%$, $\text{FRR} = 3.54\%$, $\Delta\text{FAR} = +1.64\%$, $\text{AUROC} = 0.9670$.
+
+Temporal fusion cuts legitimate meter false rejection by more than half (from $8.49\%$ down to $3.54\%$), elevating legitimate gateway availability to $96.46\%$ while suppressing random channel noise. Simultaneously, as instantaneous packet noise cancels out, the true physical hardware familiarity gap expands and becomes clearer ($+0.56\% \to +1.64\%$).
+
 ---
 
 ## 6. Practical Implications for AMR Gateway Security

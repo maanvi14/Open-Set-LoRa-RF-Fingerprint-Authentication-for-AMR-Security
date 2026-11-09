@@ -207,6 +207,22 @@ Evaluating proxy counts $k \in \{0, 1, 3, 5, 10, 15\}$ using nested prefixes rev
 \label{fig:tradeoff}
 \end{figure}
 
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{fig10_burst_aggregation.pdf}
+\caption{Impact of multi-packet burst decision fusion ($L \in \{1, 3, 5\}$ consecutive frames) on error rates and AUROC across 20 episodes.}
+\label{fig:burst}
+\end{figure}
+
+\subsection{Multi-Packet Burst Decision Fusion ($L \in \{1, 3, 5\}$)}
+In operational AMR networks, utility meters transmit periodic meter telemetry or short packet retransmission bursts. To evaluate whether temporal burst aggregation overcomes the single-packet baseline trade-off, we evaluate multi-packet decision fusion by averaging decision confidence over $L$ consecutive packet transmissions per physical device across all 20 evaluation episodes:
+\begin{itemize}
+    \item \textbf{Single-Packet Baseline ($L=1$):} $\text{FAR}_B = 11.90\%$, $\text{FRR} = 8.49\%$, $\Delta\text{FAR} = +0.56\%$, $\text{AUROC} = 0.9490$.
+    \item \textbf{3-Packet Burst Fusion ($L=3$):} $\text{FAR}_B = 11.22\%$, $\text{FRR} = 4.37\%$, $\Delta\text{FAR} = +1.27\%$, $\text{AUROC} = 0.9642$.
+    \item \textbf{5-Packet Burst Fusion ($L=5$):} $\text{FAR}_B = 10.45\%$, $\text{FRR} = 3.54\%$, $\Delta\text{FAR} = +1.64\%$, $\text{AUROC} = 0.9670$.
+\end{itemize}
+Temporal burst fusion cuts legitimate meter false rejection by more than half (from $8.49\%$ down to $3.54\%$), elevating legitimate gateway availability to $96.46\%$ while suppressing random channel noise. Simultaneously, as instantaneous packet noise cancels out, the true physical hardware familiarity gap expands and becomes clearer ($+0.56\% \to +1.64\%$).
+
 \subsection{Transmitter Heterogeneity and Robust Threshold Trade-off}
 Per-device vulnerability analysis reveals that rogue penetration varies from $0.0\%$ to $98.5\%$. The top vulnerable transmitters (IDs 46, 47, 48, 49, 50, 54 with $\text{FAR}_B > 42\% - 65\%$) cluster heavily in hardware block 4 (IDs 46--60).
 

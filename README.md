@@ -47,8 +47,9 @@ To set that threshold, engineers need example strangers. So they borrow some unf
 | **$\Delta\text{FAR}_{\text{matched}}$** | Device-matched paired | **+1.47%** | **[+0.72%, +2.40%]** (device bootstrap) |
 | **Single-proxy distortion ($k=1$)** | Proxy sweep | **+19.41%** | $\text{FAR}_A = 2.67\%$, $\text{FAR}_B = 22.08\%$ |
 | **Robust threshold ($\tau_{\text{robust}}$)** | 90th-pctile proxy rejection | $\text{FAR}_B: 11.55\% \to 4.17\%$ | FRR surges from $8.49\%$ to $30.18\%$ |
+| **Multi-Packet Burst Fusion ($L=5$)** | Temporal decision fusion | **$\text{FRR}: 8.49\% \to 3.54\%$** | **AUROC climbs to $0.9670$**, $\text{FAR}_B \to 10.45\%$ |
 | **Closed-Set Macro $F_1$** | Enrolled authentication | 99.43% | [99.32%, 99.53%] |
-| **Open-Set AUROC** | Identity-disjoint | 0.9490 | [0.9367, 0.9605] |
+| **Open-Set AUROC** | Identity-disjoint (single) | 0.9490 | [0.9367, 0.9605] |
 
 ---
 

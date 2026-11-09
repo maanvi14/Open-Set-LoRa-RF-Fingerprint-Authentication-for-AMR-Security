@@ -263,6 +263,11 @@ The following table contrasts the actual empirical numbers reported by key exist
 - **Empirical Answer / Result:**  
   LOPO provides a mathematically rigorous identity-disjoint validation protocol, but its absolute estimation error ($0.0327$) is comparable to naive testing ($0.0323$) due to finite proxy sample variance. Enforcing an identity-robust threshold ($\tau_{\text{robust}}$) slashes true stranger penetration from $11.55\%$ down to $4.17\%$ (with 4 episodes reaching $0.0\%$ penetration). However, this protection incurs a **catastrophic availability penalty**: the False Rejection Rate ($\text{FRR}$) of legitimate smart meters surges from $8.49\%$ to **$30.18\%$** on average (peaking at $84.63\%$). In a municipal AMR grid, rejecting 1 in 3 valid meter packets would trigger network packet storms and rapidly drain meter batteries.
 
+#### RQ5 (Temporal Burst Fusion & Practical AMR Availability):
+*Can multi-packet burst aggregation ($L \in \{1, 3, 5\}$ consecutive frames) overcome the single-packet baseline trade-off to achieve deployment-grade availability and higher stranger discrimination?*
+- **Empirical Answer / Result:**  
+  In real AMR deployments, smart meters send periodic packet bursts. Averaging confidence scores across $L=5$ consecutive frames cuts the legitimate False Rejection Rate by more than half: **$\text{FRR}$ drops from $8.49\%$ to $3.54\%$**, elevating gateway availability to **$96.46\%$**. Simultaneously, open-set discrimination climbs to **$\text{AUROC} = 0.9670$** (up from $0.9490$), while the familiarity gap cleanly expands to $\Delta\text{FAR} = +1.64\%$ as instantaneous packet noise cancels out. Multi-packet burst fusion proves to be the essential architectural bridge between physical-layer screening and operational grid reliability.
+
 ---
 
 ### How Our Results Help & Re-Contextualize Prior Research
@@ -550,6 +555,8 @@ All 9 publication-grade figures have been generated and saved in vector PDF and 
    Box plot comparing estimation bias across naive packet-disjoint testing, resubstitution, and Leave-One-Proxy-Out (LOPO) cross-validation.
 9. **Figure 9: Security-Availability Trade-off ([`fig9_tradeoff.png`](file:///c:/Users/maanv/Minor%20Project/results/figures/fig9_tradeoff.png))**  
    $(\text{FRR}, \text{FAR})$ operating point scatter plot comparing standard Youden threshold calibration against identity-robust calibration ($\tau_{\text{robust}}$).
+10. **Figure 10: Multi-Packet Burst Decision Fusion ([`fig10_burst_aggregation.png`](file:///c:/Users/maanv/Minor%20Project/results/figures/fig10_burst_aggregation.png))**  
+   Dual-axis scaling plot illustrating how temporal multi-packet fusion ($L \in \{1, 3, 5\}$ consecutive frames) cuts legitimate false rejection from $8.49\%$ to $3.54\%$ while elevating AUROC to $0.9670$.
 
 ---
 
@@ -559,6 +566,8 @@ All generated CSV tables are stored in [`results/tables/`](file:///c:/Users/maan
 
 | File Path | Description | Key Columns |
 |---|---|---|
+| [`results/tables/burst_aggregation_summary.csv`](file:///c:/Users/maanv/Minor%20Project/results/tables/burst_aggregation_summary.csv) | Multi-packet burst aggregation summary across 20 episodes. | `burst_length`, `FAR_A`, `FAR_B`, `FRR`, `DeltaFAR`, `AUROC` |
+| [`results/tables/burst_aggregation_results.csv`](file:///c:/Users/maanv/Minor%20Project/results/tables/burst_aggregation_results.csv) | Episode-level burst aggregation metrics ($L \in \{1, 3, 5\}$). | `episode`, `burst_length`, `tau`, `FAR_A`, `FAR_B`, `FRR`, `DeltaFAR`, `AUROC` |
 | [`results/tables/episode_summary.csv`](file:///c:/Users/maanv/Minor%20Project/results/tables/episode_summary.csv) | Primary summary of all 20 evaluation episodes. | `episode`, `tau`, `FAR_A`, `FAR_B`, `FRR`, `DeltaFAR`, `AUROC_A`, `AUROC_B`, `macro_F1` |
 | [`results/tables/stats_summary.csv`](file:///c:/Users/maanv/Minor%20Project/results/tables/stats_summary.csv) | Statistical aggregation with device-level bootstrap CIs. | `metric`, `ci_type`, `n_samples`, `mean`, `ci_lower_95`, `ci_upper_95`, `std`, `p_value` |
 | [`results/tables/matched_device_evaluation.csv`](file:///c:/Users/maanv/Minor%20Project/results/tables/matched_device_evaluation.csv) | Device-matched paired analysis evaluating identical devices. | `episode`, `device_id`, `tau_familiar`, `tau_unfamiliar`, `far_familiar`, `far_unfamiliar`, `delta_far_matched` |
