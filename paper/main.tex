@@ -141,6 +141,34 @@ Across 20 stratified episodes, device-level bootstrap analysis (resampling over 
     \item Closed-set macro-$F_1$: $99.43\%$, open-set AUROC: $0.9490$.
 \end{itemize}
 
+\begin{table*}[t]
+\centering
+\caption{Quantitative Differentiation: Literature Benchmarks vs. This Work}
+\label{tab:lit_comparison}
+\small
+\begin{tabular}{lcccccc}
+\hline
+\textbf{Dimension / Metric} & \textbf{Shen et al. (2022)} & \textbf{Hanna et al. (2021)} & \textbf{Zhang et al. (2024)} & \textbf{Cai et al. (2025)} & \textbf{Ma et al. (2025)} & \textbf{OUR WORK (2026)} \\
+\hline
+RF Protocol & LoRa SX1276 & Wi-Fi / Zigbee & LoRa & LoRa & Wi-Fi & \textbf{LoRa SX1276 COTS} \\
+Physical Radios ($N$) & 60 & 50 & 40 & 45 & 54 & \textbf{60 (USRP N210)} \\
+Features & 128 (metric latent) & Deep Metric latent & CNN feature map & Contrastive latent & 64 (prototype) & \textbf{292 baseband feats} \\
+Closed-Set Macro-$F_1$ & $\approx 95.33\%$ & $\approx 98\%$ & $93.85\%$ & $96.2\%$ & $94.7\%$ & \textbf{99.43\% $\pm$ 0.24\%} \\
+Open-Set AUROC & Reported ROC & $\approx 80\% - 98\%$ & $90.23\%$ & $\approx 92.5\%$ & $91.3\%$ & \textbf{0.9490 (AUROC$_B$)} \\
+Familiar $\text{FAR}_A$ & Not isolated & Not isolated & Not isolated & Not isolated & Not isolated & \textbf{12.35\% [7.0\%, 18.8\%]} \\
+True Stranger $\text{FAR}_B$ & $\approx 5\% - 15\%$ & Varying & OpenMax uncalib. & Distance thres. & Distance thres. & \textbf{11.55\% [7.0\%, 16.5\%]} \\
+Single-Proxy ($k=1$) $\text{FAR}_B$ & Not evaluated & Not evaluated & Not evaluated & Not evaluated & Not evaluated & \textbf{22.08\% (vs $\text{FAR}_A = 2.67\%$)} \\
+Calibrated $\Delta\text{FAR}$ & None reported & None reported & None reported & None reported & None reported & \textbf{+1.47\% (matched CI: $[+0.72\%, +2.40\%]$)} \\
+Peak Single-Proxy Gap & None reported & None reported & None reported & None reported & None reported & \textbf{+19.41\% (acute distortion)} \\
+Legitimate Baseline FRR & Not controlled & DET trade-off & $\approx 6.15\%$ & $\approx 5.5\%$ & $\approx 7.2\%$ & \textbf{8.49\% [7.16\%, 10.06\%]} \\
+Robust Remedy $\text{FAR}_{\text{robust}}$ & Not provided & Not provided & Not provided & Not provided & Not provided & \textbf{4.17\% (drops penetration by 64\%)} \\
+Robust Availability Penalty & Not quantified & Not quantified & Not quantified & Not quantified & Not quantified & \textbf{30.18\% (FRR surge $+21.7\%$)} \\
+Hardware Confound & Mentioned & None reported & None reported & None reported & None reported & \textbf{7/8 hardest in Block 4 (IDs 46--60)} \\
+Device Spearman $\rho$ & $p < 0.001$ (pseudo-rep) & None reported & None reported & None reported & None reported & \textbf{$\rho = 0.2097$ ($p = 0.1142, n=58$)} \\
+\hline
+\end{tabular}
+\end{table*}
+
 \subsection{Device-Matched Paired Analysis}
 In naive random splits, episode $\Delta\text{FAR}$ conflates familiarity with transmitter identity differences. To eliminate this confound, we evaluate held-out proxy devices on their exact identical test packets when treated as familiar ($\tau_{\text{full}}$) versus unfamiliar ($\tau_{(-j)}$):
 \begin{itemize}

@@ -52,6 +52,29 @@ To set that threshold, engineers need example strangers. So they borrow some unf
 
 ---
 
+## Quantitative Differentiation: Our Work vs Prior State-of-the-Art
+
+| Dimension / Metric | Shen et al. (2022) | Hanna et al. (2021) | Zhang et al. (2024) | Cai et al. (2025) | Ma et al. (2025) | **OUR WORK (2026)** |
+|---|---|---|---|---|---|---|
+| **Wireless Protocol** | LoRa SX1276 | Wi-Fi / Zigbee | LoRa | LoRa | Wi-Fi | **LoRa (SX1276 COTS)** |
+| **Physical Radios ($N$)** | 60 | 50 | 40 | 45 | 54 | **60 (USRP N210 Capture)** |
+| **Preamble Features** | 128 (metric latent) | Deep Metric latent | CNN feature map | Contrastive latent | 64 (prototype space) | **292 complex baseband features** |
+| **Closed-Set Macro-F1** | $\approx 95.33\%$ | $\approx 98\%$ (same day) | $93.85\%$ | $96.2\%$ | $94.7\%$ | **$99.43\% \pm 0.24\%$** |
+| **Open-Set AUROC** | Reported ROC curves | $\approx 80\% - 98\%$ | $90.23\%$ | $\approx 92.5\%$ | $91.3\%$ | **$0.9490$ (AUROC$_B$), $0.9530$ (AUROC$_A$)** |
+| **Familiar False Acceptance ($\text{FAR}_A$)** | Not isolated | Not isolated | Not isolated | Not isolated | Not isolated | **$12.35\%$** [95% CI: $7.01\%, 18.77\%$] |
+| **True Stranger Penetration ($\text{FAR}_B$)** | $\approx 5\% - 15\%$ (uncalibrated) | Varying threshold | Uncalibrated OpenMax | Distance threshold | Distance threshold | **$11.55\%$** [95% CI: $7.03\%, 16.53\%$] |
+| **Single-Proxy ($k=1$) Penetration** | Not evaluated | Not evaluated | Not evaluated | Not evaluated | Not evaluated | **$22.08\%$** (vs. $\text{FAR}_A = 2.67\%$) |
+| **Calibrated Familiarity Gap ($\Delta\text{FAR}$)** | None reported | None reported | None reported | None reported | None reported | **$+1.47\%$** [95% CI: $+0.72\%, +2.40\%$ matched] |
+| **Peak Single-Proxy Gap ($\Delta\text{FAR}_{k=1}$)** | None reported | None reported | None reported | None reported | None reported | **$+19.41\%$** (severe threshold overfitting) |
+| **Legitimate FRR at Baseline** | Not controlled | DET curve trade-off | $\approx 6.15\%$ | $\approx 5.5\%$ | $\approx 7.2\%$ | **$8.49\%$** [95% CI: $7.16\%, 10.06\%$] |
+| **Robust Remedy Penetration ($\text{FAR}_{\text{robust}}$)** | Not provided | Not provided | Not provided | Not provided | Not provided | **$4.17\%$** (drops intrusion by $64\%$) |
+| **Robust Availability Cost ($\text{FRR}_{\text{robust}}$)** | Not quantified | Not quantified | Not quantified | Not quantified | Not quantified | **$30.18\%$** (surge of $+21.69\%$, peak $84.63\%$) |
+| **Hardware Clustering Confound** | Mentioned model bias | None reported | None reported | None reported | None reported | **$7/8$ hardest radios in Block 4 (46–60)** |
+| **Spearman $\rho$ (Device-Aggregated)** | $p < 0.001$ (pseudo-rep) | None reported | None reported | None reported | None reported | **$\rho = 0.2097$ ($p = 0.1142, n=58$)** |
+| **Estimator Error (LOPO vs Naive)** | Not evaluated | Not evaluated | Not evaluated | Not evaluated | Not evaluated | **$0.0327$ (LOPO) vs $0.0323$ (Naive)** |
+
+---
+
 ## Pipeline
 
 ```
