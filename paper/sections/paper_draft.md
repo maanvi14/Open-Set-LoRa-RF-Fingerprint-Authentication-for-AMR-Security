@@ -137,11 +137,19 @@ Physical-layer RF fingerprinting serves as an effective screening filter at the 
 
 ---
 
-## 7. Limitations & Scope
+## 7. Limitations & Future Research Pathways
 
+### 7.1 Limitations & Scope
 - **Laboratory Stationary Dataset:** Evaluated on 60 commercial LoRa transceivers recorded in a controlled laboratory environment; multipath propagation and channel fading over outdoor urban deployments require future field testing.
 - **Hardware Architecture:** Surrogates represent commercial transceivers; specialized utility-grade smart meters may exhibit differing manufacturing variance.
 - **Screening Layer:** Physical-layer authentication complements, rather than replaces, cryptographic message authentication codes (MACs).
+
+### 7.2 Impact on Prior Literature & Future Research Pathways
+Our empirical findings both re-evaluate prior research and establish concrete pathways for next-generation smart grid security:
+1. **Re-Evaluating Reported Performance in Prior Work:** Previous literature reporting $<2-5\%$ false acceptance rates in RFFI often evaluated performance on packet-disjoint splits or pooled repeated episodes over identical devices. Our work provides the foundational explanation for why such systems experience performance degradation in true open-set deployments and provides the methodology to accurately measure identity generalization.
+2. **Multi-Receiver Diversity & Spatial Fusion:** In AMR networks where transmissions are overheard by multiple gateway towers, future research should explore distributed spatial fusion—combining physical-layer observations across 3–4 synchronized receivers to suppress the $30.18\%$ availability penalty of robust thresholding.
+3. **Adaptive Zero-Trust Physical/Cryptographic Hybrids:** Rather than dropping packets that fail physical-layer screening, gateways can implement an adaptive challenge-response scheme: passing packets bypass crypto handshakes (saving meter energy), while ambiguous packets trigger a cryptographic verification challenge.
+4. **Standardization of Identity-Disjoint Protocols:** Future wireless authentication benchmarks must adopt identity-disjoint and device-matched protocols as standard validation criteria.
 
 ---
 

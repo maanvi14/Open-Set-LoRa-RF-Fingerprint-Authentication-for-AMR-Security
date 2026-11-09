@@ -188,13 +188,24 @@ Evaluating an identity-robust threshold ($\tau_{\text{robust}}$) enforcing 90th-
     \item But forces False Rejection Rate ($\text{FRR}$) to surge from $8.49\%$ to $30.18\%$ on average (peaking at $84.63\%$).
 \end{itemize}
 
-\section{Practical Implications and Conclusion}
+\section{Practical Implications and Future Research Pathways}
 In AMR gateway deployments, RFFI provides an effective physical-layer screening filter, but cannot serve as a standalone perimeter gate. Our empirical results demonstrate that:
 \begin{enumerate}
     \item Gateways must not validate open-set security solely on familiar proxy radios.
     \item At least 5 physical proxy devices are necessary during calibration to avoid extreme single-device distortion ($+19.41\%$).
     \item Robust thresholding introduces an unacceptable $30.18\%$ availability penalty in battery-powered AMR networks.
 \end{enumerate}
+
+\subsection{Future Research Pathways}
+Our findings outline key directions for wireless physical-layer security:
+\begin{itemize}
+    \item \textbf{Multi-Receiver Spatial Fusion:} Combining physical observations across multiple gateway towers overhearing the same transmission to reduce the $30.18\%$ FRR penalty.
+    \item \textbf{Dynamic Outdoor Wireless Channels:} Investigating environmental fading, rain attenuation, and temperature variations on identity-disjoint thresholds.
+    \item \textbf{Adaptive Zero-Trust Hybrids:} Deploying an adaptive challenge-response scheme where physical-layer screening passes packets without crypto overhead, while ambiguous packets trigger a cryptographic handshake.
+\end{itemize}
+
+\section{Conclusion}
+This paper identified and evaluated \textit{The Familiar Stranger Problem} in open-set LoRa RF fingerprinting for AMR gateways. Using 292 complex baseband features, frozen thresholds, and 20 stratified episodes, we demonstrated that naive packet-disjoint evaluation distorts stranger penetration. Through a device-matched paired design, we confirmed a statistically significant familiarity gap ($\Delta\text{FAR}_{\text{matched}} = +1.47\%$, $95\%$ CI: $[+0.72\%, +2.40\%]$), scaling to $+19.41\%$ for single-proxy calibration. Furthermore, we quantified the operational availability cost of robust thresholds ($30.18\%$ FRR). These results establish the necessity of identity-disjoint evaluation protocols in smart grid physical-layer security.
 
 \bibliographystyle{IEEEtran}
 \bibliography{references}
