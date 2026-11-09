@@ -617,7 +617,8 @@ Minor Project/
 │   ├── 03_run_episodes.py     # Phases 4-6: Multi-episode paired evaluation
 │   ├── 04_proxy_sweep.py      # Phase 7: Proxy-count sweep
 │   ├── 05_analyse.py          # Phase 8+8B: Statistics, LOPO, groups
-│   └── 06_make_figures_tables.py # Phase 9: Generate figures & LaTeX tables
+│   ├── 06_make_figures_tables.py # Phase 9: Generate figures & LaTeX tables
+│   └── 07_burst_aggregation_experiment.py # Temporal multi-packet fusion (L in {1, 3, 5})
 ├── tests/
 │   ├── test_splits_no_leakage.py # Zero-leakage verification (24 tests)
 │   ├── test_threshold_frozen.py  # Frozen threshold immutability tests (2 tests)
@@ -655,10 +656,13 @@ python scripts/04_proxy_sweep.py
 # 7. Compute device-level statistics, LOPO cross-validation, and device-matched pairs
 python scripts/05_analyse.py
 
-# 8. Render all 9 publication figures and export LaTeX tables
+# 8. Render all 10 publication figures and export LaTeX tables
 python scripts/06_make_figures_tables.py
 
-# 9. Execute the unit test suite (35 tests)
+# 9. Run the multi-packet burst fusion experiment across 20 episodes
+python scripts/07_burst_aggregation_experiment.py
+
+# 10. Execute the unit test suite (35 tests)
 pytest tests/ -v
 ```
 

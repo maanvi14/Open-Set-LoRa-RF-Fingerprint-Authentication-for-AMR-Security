@@ -31,6 +31,7 @@ def export_latex_tables() -> None:
         (CFG.path_tables / "threshold_tradeoff.csv",      "tab_threshold_tradeoff"),
         (CFG.path_tables / "neighbour_analysis.csv",      "tab_neighbour_analysis"),
         (CFG.path_results / "sweep" / "sweep_results.csv", "tab_sweep_results"),
+        (CFG.path_tables / "burst_aggregation_summary.csv", "tab_burst_aggregation"),
     ]
 
     for csv_path, label in tables:

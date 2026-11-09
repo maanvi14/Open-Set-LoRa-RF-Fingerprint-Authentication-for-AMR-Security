@@ -128,6 +128,7 @@ python scripts/03_run_episodes.py      # Phases 4–6 — produces results/episo
 python scripts/04_proxy_sweep.py       # Phase 7 — produces results/sweep/
 python scripts/05_analyse.py           # Phase 8 + 8B — produces results/tables/
 python scripts/06_make_figures_tables.py  # Phase 9 — produces results/figures/ + LaTeX
+python scripts/07_burst_aggregation_experiment.py # Temporal multi-packet fusion (L in {1, 3, 5})
 
 # 4. Run all tests
 pytest tests/ -v
