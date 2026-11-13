@@ -32,10 +32,10 @@ To set that threshold, engineers need example strangers. So they borrow some unf
 3. **Device-Matched Paired Design:** Evaluating the exact same physical devices on identical test packets at $\tau_{\text{full}}$ vs. $\tau_{(-j)}$ to eliminate device-composition confounding ($\Delta\text{FAR}_{\text{matched}} = +1.47\%$, $95\%$ device-level bootstrap CI: $[+0.72\%, +2.40\%]$).
 4. **Device-Level Bootstrap Confidence Intervals:** Resampled over the 60 physical devices rather than pseudo-replicated episodes ($\text{FAR}_A = 12.35\%$, $95\%$ CI: $[7.01\%, 18.77\%]$; $\text{FAR}_B = 11.55\%$, $95\%$ CI: $[7.03\%, 16.53\%]$).
 5. **Proxy-Count Scaling Sweep ($k \in \{0, 1, 3, 5, 10, 15\}$):** Nested prefixes and matched-FRR evaluation, revealing acute single-proxy distortion ($k=1$ yields $+19.41\%$ gap).
-6. **Hardness & Hardware Grouping:** Per-device vulnerability ranges from $0.0\%$ to $98.5\%$, with top vulnerable devices clustering tightly within hardware block 4 (IDs 46–60).
-7. **Availability Cost of Robust Thresholding ($\tau_{\text{robust}}$):** Reduces true stranger penetration from $11.55\%$ to $4.17\%$ at the cost of FRR surging from $8.49\%$ to $30.18\%$.
+6. **Hardness & Hardware Grouping:** Device-mean FAR_B ranges from 0.0% to 65.7% (device 48); single-episode device penetration reaches up to 100%. Top vulnerable devices cluster tightly within hardware block 4 (IDs 46–60).
+7. **Availability Cost of Robust Thresholding ($\tau_{\text{robust}}$):** Reduces episode-mean true stranger penetration from $11.90\%$ to $4.43\%$ (a $62.8\%$ reduction) at the cost of FRR surging from $8.49\%$ to $30.08\%$ (+21.59 pp).
 8. **Leave-One-Proxy-Out (LOPO) Remedy:** Cross-validated threshold calibration protocol evaluated against naive testing.
-9. **Multi-Packet Burst Decision Fusion ($L \in \{1, 3, 5\}$):** Temporal fusion cuts legitimate false rejection from $8.49\%$ to $3.54\%$ (boosting availability to $96.46\%$) while elevating open-set discrimination to $\text{AUROC} = 0.9670$.
+9. **Multi-Packet Burst Decision Fusion ($L \in \{1, 3, 5\}$ at $\tau^*$):** Evaluated at the baseline Youden threshold $\tau^*$, temporal fusion cuts legitimate false rejection from $8.49\%$ to $3.54\%$ (boosting availability to $96.46\%$) while elevating open-set discrimination to $\text{AUROC} = 0.9670$.
 
 ---
 
@@ -47,8 +47,8 @@ To set that threshold, engineers need example strangers. So they borrow some unf
 | **$\text{FAR}_B$ (True Strangers)** | Identity-disjoint test | 11.55% | [7.03%, 16.53%] (device bootstrap) |
 | **$\Delta\text{FAR}_{\text{matched}}$** | Device-matched paired | **+1.47%** | **[+0.72%, +2.40%]** (device bootstrap) |
 | **Single-proxy distortion ($k=1$)** | Proxy sweep | **+19.41%** | $\text{FAR}_A = 2.67\%$, $\text{FAR}_B = 22.08\%$ |
-| **Robust threshold ($\tau_{\text{robust}}$)** | 90th-pctile proxy rejection | $\text{FAR}_B: 11.55\% \to 4.17\%$ | FRR surges from $8.49\%$ to $30.18\%$ |
-| **Multi-Packet Burst Fusion ($L=5$)** | Temporal decision fusion | **$\text{FRR}: 8.49\% \to 3.54\%$** | **AUROC climbs to $0.9670$**, $\text{FAR}_B \to 10.45\%$ |
+| **Robust threshold ($\tau_{\text{robust}}$)** | 90th-pctile proxy rejection | $\text{FAR}_B: 11.90\% \to 4.43\%$ (episode mean) | FRR surges from $8.49\%$ to $30.08\%$ (+21.59 pp) |
+| **Multi-Packet Burst Fusion ($L=5$, $\tau^*$)** | Temporal decision fusion | **$\text{FRR}: 8.49\% \to 3.54\%$** | **AUROC climbs to $0.9670$**, $\text{FAR}_B \to 10.45\%$ |
 | **Closed-Set Macro $F_1$** | Enrolled authentication | 99.43% | [99.32%, 99.53%] |
 | **Open-Set AUROC** | Identity-disjoint (single) | 0.9490 | [0.9367, 0.9605] |
 
@@ -69,9 +69,9 @@ To set that threshold, engineers need example strangers. So they borrow some unf
 | **Calibrated Familiarity Gap (ΔFAR)** | None reported | None reported | None reported | None reported | None reported | **+1.47%** [95% CI: +0.72%, +2.40% matched] |
 | **Peak Single-Proxy Gap (ΔFAR_k1)** | None reported | None reported | None reported | None reported | None reported | **+19.41%** (severe threshold overfitting) |
 | **Legitimate FRR at Baseline** | Not controlled | DET curve trade-off | ≈ 6.15% | ≈ 5.5% | ≈ 7.2% | **8.49%** [95% CI: 7.16%, 10.06%] |
-| **Robust Remedy Penetration (FAR_robust)** | Not provided | Not provided | Not provided | Not provided | Not provided | **4.17%** (drops intrusion by 64%) |
-| **Robust Availability Cost (FRR_robust)** | Not quantified | Not quantified | Not quantified | Not quantified | Not quantified | **30.18%** (surge of +21.69%, peak 84.63%) |
-| **Multi-Packet Burst Fusion (L=5)** | Not evaluated | Not evaluated | Not evaluated | Not evaluated | Not evaluated | **FRR → 3.54%, AUROC → 0.9670** |
+| **Robust Remedy Penetration (FAR_robust)** | Not provided | Not provided | Not provided | Not provided | Not provided | **4.43%** (reduces episode-mean stranger penetration by 62.8%) |
+| **Robust Availability Cost (FRR_robust)** | Not quantified | Not quantified | Not quantified | Not quantified | Not quantified | **30.08%** (surge of +21.59 pp, peak 84.63%) |
+| **Multi-Packet Burst Fusion (L=5, $\tau^*$)** | Not evaluated | Not evaluated | Not evaluated | Not evaluated | Not evaluated | **FRR → 3.54%, AUROC → 0.9670** |
 | **Hardware Clustering Confound** | Mentioned model bias | None reported | None reported | None reported | None reported | **7/8 hardest radios in Block 4 (46–60)** |
 | **Spearman ρ (Device-Aggregated)** | p < 0.001 (pseudo-rep) | None reported | None reported | None reported | None reported | **ρ = 0.2097 (p = 0.1142, n=58)** |
 | **Estimator Error (LOPO vs Naive)** | Not evaluated | Not evaluated | Not evaluated | Not evaluated | Not evaluated | **0.0327 (LOPO) vs 0.0323 (Naive)** |

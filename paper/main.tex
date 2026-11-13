@@ -30,7 +30,7 @@ Radio Frequency Fingerprint Identification (RFFI) provides a complementary physi
 
 Our most striking finding concerns \textbf{proxy-count sensitivity}. Evaluating across 20 seeded episodes on the 60-device LoRa RFFI benchmark (26,000 packets, 292 complex baseband features, strictly frozen threshold), we show that \textbf{single-proxy calibration ($k=1$) creates a dangerous $+19.41\%$ blind spot}: familiar testing reports $\text{FAR}_A = 2.67\%$, but true physical strangers penetrate at $\text{FAR}_B = 22.08\%$. This distortion stabilizes only at $k \ge 5$ proxy devices. To isolate the familiarity effect from device-composition differences, we introduce a \textbf{device-matched paired design} evaluating identical devices on identical packets under familiar ($\tau_{\text{full}}$) versus unfamiliar ($\tau_{(-j)}$) calibration, revealing a modest but statistically significant gap of $\Delta\text{FAR}_{\text{matched}} = +1.47\%$ ($95\%$ device-level bootstrap CI: $[+0.72\%, +2.40\%]$).
 
-A key negative result concerns the cost of mitigation: an identity-robust threshold ($\tau_{\text{robust}}$) reduces true-stranger penetration from $11.55\%$ to $4.17\%$, but the False Rejection Rate surges from $8.49\%$ to $30.18\%$---rejecting nearly 1 in 3 legitimate meter packets, which is operationally unacceptable for battery-powered AMR networks. Temporal multi-packet burst fusion ($L=5$) reduces legitimate meter false rejection to $3.54\%$ (availability $96.46\%$) while elevating open-set discrimination to $\text{AUROC} = 0.9670$. Per-device vulnerability is severely heterogeneous ($0.0\%$ to $98.5\%$), with 7 of the 8 hardest rogues clustering in a single hardware block. These findings establish that physical-layer authentication must be evaluated under identity-disjoint protocols with $\ge 5$ diverse proxy devices to avoid dangerously overestimating real-world protection.
+A key negative result concerns the cost of mitigation: an identity-robust threshold ($\tau_{\text{robust}}$) reduces episode-mean true-stranger penetration from $11.90\%$ to $4.43\%$ (a $62.8\%$ reduction), but the False Rejection Rate surges from $8.49\%$ to $30.08\%$ (+21.59 pp, peaking at $84.63\%$)---rejecting nearly 1 in 3 legitimate meter packets, which is operationally unacceptable for battery-powered AMR networks. Temporal multi-packet burst fusion ($L=5$, evaluated at $\tau_{\text{Youden}}$) reduces legitimate meter false rejection to $3.54\%$ (availability $96.46\%$) while elevating open-set discrimination to $\text{AUROC} = 0.9670$. Device-mean $\text{FAR}_B$ ranges from $0.0\%$ to $65.7\%$ (device 48); single-episode device penetration reaches up to $100\%$, with 7 of the 8 hardest rogues clustering in a single hardware block. These findings establish that physical-layer authentication must be evaluated under identity-disjoint protocols with $\ge 5$ diverse proxy devices to avoid dangerously overestimating real-world protection.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -57,8 +57,8 @@ We identify a fundamental methodological flaw in this evaluation paradigm: \text
     \item \textbf{Device-Matched Paired Design:} To isolate familiarity bias from physical device heterogeneity, we introduce a device-matched evaluation evaluating the exact same physical devices on identical test packets at full calibration ($\tau_{\text{full}}$) versus held-out calibration ($\tau_{(-j)}$), demonstrating a statistically significant gap of $\Delta\text{FAR}_{\text{matched}} = +1.47\%$ ($95\%$ device-level bootstrap CI: $[+0.72\%, +2.40\%]$).
     \item \textbf{Device-Level Bootstrap Confidence Intervals:} We report rigorous device-level bootstrap intervals over the 60 physical transmitters ($\text{FAR}_A = 12.35\%$, $95\%$ CI: $[7.01\%, 18.77\%]$; $\text{FAR}_B = 11.55\%$, $95\%$ CI: $[7.03\%, 16.53\%]$).
     \item \textbf{Proxy-Count Scaling Sweep ($k \in \{0, 1, 3, 5, 10, 15\}$):} We measure how familiarity bias scales with proxy count using nested prefix subsets and matched-FRR evaluation, demonstrating that single-proxy calibration ($k=1$) incurs an acute $+19.41\%$ optimism gap ($\text{FAR}_A = 2.67\%$ vs. $\text{FAR}_B = 22.08\%$).
-    \item \textbf{Transmitter Vulnerability Heterogeneity:} Per-device rankings show that rogue penetration varies from $0.0\%$ to $98.5\%$, with the top vulnerable transmitters clustering heavily within unaugmented hardware block 4 (IDs 46--60).
-    \item \textbf{Robust Threshold ($\tau_{\text{robust}}$) Trade-off:} We evaluate an identity-robust threshold enforcing 90th-percentile proxy rejection, showing that it lowers true-stranger penetration from $11.55\%$ to $4.17\%$ but imposes a steep operational availability penalty (FRR surges from $8.49\%$ to $30.18\%$).
+    \item \textbf{Transmitter Vulnerability Heterogeneity:} Device-mean $\text{FAR}_B$ ranges from $0.0\%$ to $65.7\%$ (device 48); single-episode device penetration reaches up to $100\%$, with the top vulnerable transmitters clustering heavily within unaugmented hardware block 4 (IDs 46--60).
+    \item \textbf{Robust Threshold ($\tau_{\text{robust}}$) Trade-off:} We evaluate an identity-robust threshold enforcing 90th-percentile proxy rejection, showing that it reduces episode-mean true-stranger penetration from $11.90\%$ to $4.43\%$ (a $62.8\%$ reduction) but imposes a steep operational availability penalty (FRR surges from $8.49\%$ to $30.08\%$, a $+21.59$~pp increase).
     \item \textbf{Leave-One-Proxy-Out (LOPO) Remedy:} We assess cross-validated threshold calibration, showing that while LOPO provides an identity-disjoint validation protocol, finite proxy sample variance leaves estimation error comparable to naive testing ($\approx 0.032$ vs $0.033$).
 \end{enumerate}
 
@@ -81,7 +81,7 @@ Our research establishes six distinct dimensions of novelty over existing wirele
     \item \textbf{Device-Matched Confound Elimination:} We propose a device-matched paired protocol that evaluates identical physical hardware on identical test packets when familiar ($\tau_{\text{full}}$) versus unfamiliar ($\tau_{(-j)}$), isolating the pure familiarity gap ($\Delta\text{FAR}_{\text{matched}} = +1.47\%$) free from device-composition confounding.
     \item \textbf{Device-Level Statistical Bounds:} We eliminate pseudo-replication by deriving true device-level bootstrap confidence intervals over the 60 physical transmitters rather than pooling repeated episodes.
     \item \textbf{Empirical Outlier Scaling Law:} We chart the non-linear scaling law of proxy count $k \in \{0..15\}$, discovering that single-proxy calibration ($k=1$) induces an acute $+19.41\%$ familiarity gap and establishing the empirical minimum requirement of $\ge 5$ proxy transmitters.
-    \item \textbf{Operational AMR Availability Cost:} We provide the first quantification of the real-world operational penalty imposed by robust open-set calibration ($\tau_{\text{robust}}$), revealing a severe $30.18\%$ false rejection rate in smart grid networks.
+    \item \textbf{Operational AMR Availability Cost:} We provide the first quantification of the real-world operational penalty imposed by robust open-set calibration ($\tau_{\text{robust}}$), revealing a severe $30.08\%$ false rejection rate in smart grid networks.
 \end{enumerate}
 
 \section{Dataset Audit and Experimental Setup}
@@ -167,9 +167,9 @@ Single-Proxy ($k=1$) $\text{FAR}_B$ & Not evaluated & Not evaluated & Not evalua
 Calibrated $\Delta\text{FAR}$ & None reported & None reported & None reported & None reported & None reported & \textbf{+1.47\% (matched CI: $[+0.72\%, +2.40\%]$)} \\
 Peak Single-Proxy Gap & None reported & None reported & None reported & None reported & None reported & \textbf{+19.41\% (acute distortion)} \\
 Legitimate Baseline FRR & Not controlled & DET trade-off & $\approx 6.15\%$ & $\approx 5.5\%$ & $\approx 7.2\%$ & \textbf{8.49\% [7.16\%, 10.06\%]} \\
-Robust Remedy $\text{FAR}_{\text{robust}}$ & Not provided & Not provided & Not provided & Not provided & Not provided & \textbf{4.17\% (drops penetration by 64\%)} \\
-Robust Availability Penalty & Not quantified & Not quantified & Not quantified & Not quantified & Not quantified & \textbf{30.18\% (FRR surge $+21.7\%$)} \\
-Multi-Packet Burst Fusion ($L=5$) & Not evaluated & Not evaluated & Not evaluated & Not evaluated & Not evaluated & \textbf{$\text{FRR} \to 3.54\%$, $\text{AUROC} \to 0.9670$} \\
+Robust Remedy $\text{FAR}_{\text{robust}}$ & Not provided & Not provided & Not provided & Not provided & Not provided & \textbf{4.43\% (reduces penetration by 62.8\%)} \\
+Robust Availability Penalty & Not quantified & Not quantified & Not quantified & Not quantified & Not quantified & \textbf{30.08\% (FRR surge $+21.59$ pp)} \\
+Multi-Packet Burst Fusion ($L=5$, $\tau^*$) & Not evaluated & Not evaluated & Not evaluated & Not evaluated & Not evaluated & \textbf{$\text{FRR} \to 3.54\%$, $\text{AUROC} \to 0.9670$} \\
 Hardware Confound & Mentioned & None reported & None reported & None reported & None reported & \textbf{7/8 hardest in Block 4 (IDs 46--60)} \\
 Device Spearman $\rho$ & $p < 0.001$ (pseudo-rep) & None reported & None reported & None reported & None reported & \textbf{$\rho = 0.2097$ ($p = 0.1142, n=58$)} \\
 \hline
@@ -221,8 +221,8 @@ Evaluating proxy counts $k \in \{0, 1, 3, 5, 10, 15\}$ using nested prefixes rev
 \label{fig:burst}
 \end{figure}
 
-\subsection{Multi-Packet Burst Decision Fusion ($L \in \{1, 3, 5\}$)}
-In operational AMR networks, utility meters transmit periodic meter telemetry or short packet retransmission bursts. To evaluate whether temporal burst aggregation overcomes the single-packet baseline trade-off, we evaluate multi-packet decision fusion by averaging decision confidence over $L$ consecutive packet transmissions per physical device across all 20 evaluation episodes. Table~\ref{tab:burst_aggregation} and Figure~\ref{fig:burst} summarize the empirical results:
+\subsection{Multi-Packet Burst Decision Fusion ($L \in \{1, 3, 5\}$ at $\tau^*$)}
+In operational AMR networks, utility meters transmit periodic meter telemetry or short packet retransmission bursts. To evaluate whether temporal burst aggregation overcomes the single-packet baseline trade-off, we evaluate multi-packet decision fusion by averaging decision confidence over $L$ consecutive packet transmissions per physical device across all 20 evaluation episodes, operating at the baseline Youden threshold $\tau^*$ (as opposed to $\tau_{\text{robust}}$). Table~\ref{tab:burst_aggregation} and Figure~\ref{fig:burst} summarize the empirical results:
 \input{tables/tab_burst_aggregation.tex}
 \begin{itemize}
     \item \textbf{Single-Packet Baseline ($L=1$):} $\text{FAR}_B = 11.90\%$, $\text{FRR} = 8.49\%$, $\Delta\text{FAR} = +0.56\%$, $\text{AUROC} = 0.9490$.
@@ -232,12 +232,12 @@ In operational AMR networks, utility meters transmit periodic meter telemetry or
 Temporal burst fusion cuts legitimate meter false rejection by more than half (from $8.49\%$ down to $3.54\%$), elevating legitimate gateway availability to $96.46\%$ while suppressing random channel noise. Simultaneously, as instantaneous packet noise cancels out, the true physical hardware familiarity gap expands and becomes clearer ($+0.56\% \to +1.64\%$).
 
 \subsection{Transmitter Heterogeneity and Robust Threshold Trade-off}
-Per-device vulnerability analysis reveals that rogue penetration varies from $0.0\%$ to $98.5\%$. The top vulnerable transmitters (IDs 46, 47, 48, 49, 50, 54 with $\text{FAR}_B > 42\% - 65\%$) cluster heavily in hardware block 4 (IDs 46--60).
+Per-device vulnerability analysis reveals that device-mean $\text{FAR}_B$ ranges from $0.0\%$ to $65.7\%$ (device 48); single-episode device penetration reaches up to $100\%$. The top vulnerable transmitters (IDs 46, 47, 48, 49, 50, 54 with $\text{FAR}_B > 42\% - 65\%$) cluster heavily in hardware block 4 (IDs 46--60).
 
 Evaluating an identity-robust threshold ($\tau_{\text{robust}}$) enforcing 90th-percentile proxy rejection:
 \begin{itemize}
-    \item Drops true stranger penetration from $11.55\%$ to $4.17\%$.
-    \item But forces False Rejection Rate ($\text{FRR}$) to surge from $8.49\%$ to $30.18\%$ on average (peaking at $84.63\%$).
+    \item Reduces episode-mean true stranger penetration from $11.90\%$ to $4.43\%$ (a $62.8\%$ reduction).
+    \item But forces False Rejection Rate ($\text{FRR}$) to surge from $8.49\%$ to $30.08\%$ on average (+21.59 pp, peaking at $84.63\%$).
 \end{itemize}
 
 \section{Practical Implications and Future Research Pathways}
@@ -245,19 +245,19 @@ In AMR gateway deployments, RFFI provides an effective physical-layer screening 
 \begin{enumerate}
     \item Gateways must not validate open-set security solely on familiar proxy radios.
     \item At least 5 physical proxy devices are necessary during calibration to avoid extreme single-device distortion ($+19.41\%$).
-    \item Robust thresholding introduces an unacceptable $30.18\%$ availability penalty in battery-powered AMR networks.
+    \item Robust thresholding introduces an unacceptable $30.08\%$ availability penalty in battery-powered AMR networks.
 \end{enumerate}
 
 \subsection{Future Research Pathways}
 Our findings outline key directions for wireless physical-layer security:
 \begin{itemize}
-    \item \textbf{Multi-Receiver Spatial Fusion:} Combining physical observations across multiple gateway towers overhearing the same transmission to reduce the $30.18\%$ FRR penalty.
+    \item \textbf{Multi-Receiver Spatial Fusion:} Combining physical observations across multiple gateway towers overhearing the same transmission to reduce the $30.08\%$ FRR penalty.
     \item \textbf{Dynamic Outdoor Wireless Channels:} Investigating environmental fading, rain attenuation, and temperature variations on identity-disjoint thresholds.
     \item \textbf{Adaptive Zero-Trust Hybrids:} Deploying an adaptive challenge-response scheme where physical-layer screening passes packets without crypto overhead, while ambiguous packets trigger a cryptographic handshake.
 \end{itemize}
 
 \section{Conclusion}
-This paper identified and evaluated \textit{The Familiar Stranger Problem} in open-set LoRa RF fingerprinting for AMR gateways. Using 292 complex baseband features, frozen thresholds, and 20 stratified episodes, we demonstrated that naive packet-disjoint evaluation distorts stranger penetration. Through a device-matched paired design, we confirmed a statistically significant familiarity gap ($\Delta\text{FAR}_{\text{matched}} = +1.47\%$, $95\%$ CI: $[+0.72\%, +2.40\%]$), scaling to $+19.41\%$ for single-proxy calibration. Furthermore, we quantified the operational availability cost of robust thresholds ($30.18\%$ FRR). These results establish the necessity of identity-disjoint evaluation protocols in smart grid physical-layer security.
+This paper identified and evaluated \textit{The Familiar Stranger Problem} in open-set LoRa RF fingerprinting for AMR gateways. Using 292 complex baseband features, frozen thresholds, and 20 stratified episodes, we demonstrated that naive packet-disjoint evaluation distorts stranger penetration. Through a device-matched paired design, we confirmed a statistically significant familiarity gap ($\Delta\text{FAR}_{\text{matched}} = +1.47\%$, $95\%$ CI: $[+0.72\%, +2.40\%]$), scaling to $+19.41\%$ for single-proxy calibration. Furthermore, we quantified the operational availability cost of robust thresholds ($30.08\%$ FRR). These results establish the necessity of identity-disjoint evaluation protocols in smart grid physical-layer security.
 
 \bibliographystyle{IEEEtran}
 \bibliography{references}

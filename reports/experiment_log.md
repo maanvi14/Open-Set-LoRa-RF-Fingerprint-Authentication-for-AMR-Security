@@ -100,15 +100,15 @@
 - **Device-Level Spearman Correlation:** $\rho = 0.2097$ ($p = 0.1142, n=58$ unique devices) after removing pseudo-replication.
 
 ### 5.5 Identity-Robust Threshold ($\tau_{\text{robust}}$) Trade-off
-- Raising threshold from $\tau_{\text{youden}} = 0.704 \to \tau_{\text{robust}} = 0.854$ drops true stranger penetration from $11.55\% \to 4.17\%$.
-- However, False Rejection Rate surges from $8.49\% \to 30.18\%$ on average (peaking at $84.63\%$).
+- Raising threshold from $\tau_{\text{youden}} = 0.704 \to \tau_{\text{robust}} = 0.854$ reduces episode-mean true stranger penetration from $11.90\% \to 4.43\%$ (a $62.8\%$ reduction).
+- However, False Rejection Rate surges from $8.49\% \to 30.08\%$ on average (+21.59 pp, peaking at $84.63\%$).
 
 ### 5.6 Leave-One-Proxy-Out (LOPO) Remedy (Phase 8B)
 - **Naive Packet-Disjoint Absolute Error:** $0.0323$
 - **LOPO Absolute Error:** $0.0327$
 - Absolute estimation error between LOPO and naive testing is within empirical noise.
 
-### 5.7 Multi-Packet Burst Decision Fusion ($L \in \{1, 3, 5\}$)
+### 5.7 Multi-Packet Burst Decision Fusion ($L \in \{1, 3, 5\}$ at $\tau^*$)
 - **Single-Packet Baseline ($L=1$):** $\text{FAR}_B = 11.90\%$, $\text{FRR} = 8.49\%$, $\Delta\text{FAR} = +0.56\%$, $\text{AUROC} = 0.9490$.
 - **3-Packet Burst Fusion ($L=3$):** $\text{FAR}_B = 11.22\%$, $\text{FRR} = 4.37\%$, $\Delta\text{FAR} = +1.27\%$, $\text{AUROC} = 0.9642$.
 - **5-Packet Burst Fusion ($L=5$):** $\text{FAR}_B = 10.45\%$, $\text{FRR} = 3.54\%$, $\Delta\text{FAR} = +1.64\%$, $\text{AUROC} = 0.9670$.
@@ -129,9 +129,9 @@
 | **Calibrated Familiarity Gap (ΔFAR)** | None reported | None reported | None reported | None reported | None reported | **+1.47%** (95% CI: [+0.72%, +2.40%] matched) |
 | **Peak Single-Proxy Gap (ΔFAR_k1)** | None reported | None reported | None reported | None reported | None reported | **+19.41%** (severe threshold overfitting) |
 | **Legitimate FRR at Baseline** | Not controlled | DET curve trade-off | ≈ 6.15% | ≈ 5.5% | ≈ 7.2% | **8.49%** (95% CI: [7.16%, 10.06%]) |
-| **Robust Remedy Penetration (FAR_robust)** | Not provided | Not provided | Not provided | Not provided | Not provided | **4.17%** (drops intrusion by 64%) |
-| **Robust Availability Cost (FRR_robust)** | Not quantified | Not quantified | Not quantified | Not quantified | Not quantified | **30.18%** (surge of +21.69%, peak 84.63%) |
-| **Multi-Packet Burst Fusion (L=5)** | Not evaluated | Not evaluated | Not evaluated | Not evaluated | Not evaluated | **FRR → 3.54%, AUROC → 0.9670** |
+| **Robust Remedy Penetration (FAR_robust)** | Not provided | Not provided | Not provided | Not provided | Not provided | **4.43%** (reduces episode-mean stranger penetration by 62.8%) |
+| **Robust Availability Cost (FRR_robust)** | Not quantified | Not quantified | Not quantified | Not quantified | Not quantified | **30.08%** (surge of +21.59 pp, peak 84.63%) |
+| **Multi-Packet Burst Fusion (L=5, $\tau^*$)** | Not evaluated | Not evaluated | Not evaluated | Not evaluated | Not evaluated | **FRR → 3.54%, AUROC → 0.9670** |
 | **Hardware Clustering Confound** | Mentioned model bias | None reported | None reported | None reported | None reported | **7/8 hardest radios in Block 4 (46–60)** |
 | **Spearman ρ (Device-Aggregated)** | p < 0.001 (pseudo-rep) | None reported | None reported | None reported | None reported | **ρ = 0.2097 (p = 0.1142, n=58)** |
 | **Unbiased Estimator Error (LOPO vs Naive)** | Not evaluated | Not evaluated | Not evaluated | Not evaluated | Not evaluated | **0.0327 (LOPO) vs 0.0323 (Naive)** |

@@ -137,7 +137,7 @@ Prior papers commonly commit the statistical error of pseudo-replication—pooli
 We discover and document the non-linear scaling law of outlier exposure in physical-layer device authentication. We reveal that single-device calibration ($k=1$) induces a catastrophic **$+19.41\%$ familiarity gap** ($\text{FAR}_A = 2.67\%$ vs $\text{FAR}_B = 22.08\%$), and establish the empirical threshold: utilities must calibrate against at least 5 to 10 distinct physical transmitters to avoid acute single-device boundary distortion.
 
 #### 6. Quantification of the Identity-Robust Threshold ($\tau_{\text{robust}}$) Trade-off in AMR Systems
-We compute for the first time the real-world operational penalty of identity-robust thresholding: while $\tau_{\text{robust}}$ successfully drops true stranger penetration from $11.55\%$ to $4.17\%$, it causes False Rejection Rate ($\text{FRR}$) to surge to $30.18\%$ (peaking at $84.63\%$). This demonstrates that in battery-operated AMR networks, robust RFF cannot serve as an impenetrable perimeter gate and must be framed as a defense-in-depth screening layer.
+We compute for the first time the real-world operational penalty of identity-robust thresholding: while $\tau_{\text{robust}}$ reduces episode-mean true stranger penetration from $11.90\%$ to $4.43\%$ (a $62.8\%$ reduction), it causes False Rejection Rate ($\text{FRR}$) to surge from $8.49\%$ to $30.08\%$ (+21.59 pp, peaking at $84.63\%$). This demonstrates that in battery-operated AMR networks, robust RFF cannot serve as an impenetrable perimeter gate and must be framed as a defense-in-depth screening layer.
 
 #### 7. Baseband Non-Linearity Proof: Why Distance-Based Metric Learning Fails
 We investigate whether distance-based metric learning (Nearest Centroid with Cosine Distance) can provide smooth open-set boundaries. We empirically prove that Nearest Centroids fail completely ($\text{AUROC} \approx 0.48 - 0.55$, equivalent to random coin tossing) because physical preamble features (combining I/Q moments, envelope compression, phase noise, and FFT bins) exhibit complex non-linear cross-correlations across hardware batches. Supervised tree ensembles (Random Forest with 300 estimators) are fundamentally required, achieving $99.43\% \pm 0.24\%$ Macro-$F_1$.
@@ -224,9 +224,9 @@ The following table contrasts the actual empirical numbers reported by key exist
 | **Calibrated Familiarity Gap (ΔFAR)** | None reported | None reported | None reported | None reported | None reported | **+1.47%** (95% CI: [+0.72%, +2.40%] matched) |
 | **Maximum Single-Proxy Gap (ΔFAR_k1)** | None reported | None reported | None reported | None reported | None reported | **+19.41%** (acute threshold overfitting) |
 | **False Rejection Rate (FRR) at Baseline** | Not controlled | DET curve trade-off | ≈ 6.15% | ≈ 5.5% | ≈ 7.2% | **8.49%** (95% CI: [7.16%, 10.06%]) |
-| **Robust Remedy Acceptance (FAR_robust)** | Not provided | Not provided | Not provided | Not provided | Not provided | **4.17%** (drops penetration by 64%) |
-| **Robust Availability Penalty (FRR_robust)** | Not quantified | Not quantified | Not quantified | Not quantified | Not quantified | **30.18%** (surge of +21.69%, peak 84.63%) |
-| **Multi-Packet Burst Fusion (L=5)** | Not evaluated | Not evaluated | Not evaluated | Not evaluated | Not evaluated | **FRR → 3.54%, AUROC → 0.9670** |
+| **Robust Remedy Acceptance (FAR_robust)** | Not provided | Not provided | Not provided | Not provided | Not provided | **4.43%** (reduces episode-mean stranger penetration by 62.8%) |
+| **Robust Availability Penalty (FRR_robust)** | Not quantified | Not quantified | Not quantified | Not quantified | Not quantified | **30.08%** (surge of +21.59 pp, peak 84.63%) |
+| **Multi-Packet Burst Fusion (L=5, $\tau^*$)** | Not evaluated | Not evaluated | Not evaluated | Not evaluated | Not evaluated | **FRR → 3.54%, AUROC → 0.9670** |
 | **Hardware Clustering Effect** | Mentioned model bias | None reported | None reported | None reported | None reported | **7/8 hardest radios in Block 4 (46–60)** |
 | **Spearman ρ (Non-Pseudoreplicated)** | p < 0.001 (pooled) | None reported | None reported | None reported | None reported | **ρ = 0.2097 (p = 0.1142, n=58)** |
 | **Unbiased Estimator Error (LOPO vs Naive)** | Not evaluated | Not evaluated | Not evaluated | Not evaluated | Not evaluated | **0.0327 (LOPO) vs 0.0323 (Naive)** |
@@ -257,7 +257,7 @@ The following table contrasts the actual empirical numbers reported by key exist
 #### RQ1 (The Familiarity Gap & Confound Elimination):
 *Does evaluating open-set threshold acceptance on held-out packets from calibration transmitters (packet-disjoint) underestimate vulnerability compared to physical transmitters never seen during calibration (identity-disjoint), and what is the true gap when transmitter hardware differences are strictly controlled?*
 - **Empirical Answer / Result:**  
-  In random episode allocations, the mean familiarity gap is $\Delta\text{FAR} = +0.56\%$ ($95\%$ CI: $[-1.55\%, +2.39\%]$, positive in $65\%$ of episodes). However, naive episode-level pooling masks the familiarity effect because baseline transmitter hardness varies widely (from $0.0\%$ to $98.5\%$). To eliminate this hardware confound, our novel **Device-Matched Paired Design** evaluates the exact same physical devices on identical test packets at $\tau_{\text{full}}$ (familiar) versus $\tau_{(-j)}$ (unfamiliar). This isolates the pure familiarity effect, proving a **statistically significant gap of $\Delta\text{FAR}_{\text{matched}} = +1.47\%$ with a strictly positive 95% device bootstrap CI: $[+0.72\%, +2.40\%]$**.
+  In random episode allocations, the mean familiarity gap is $\Delta\text{FAR} = +0.56\%$ ($95\%$ CI: $[-1.55\%, +2.39\%]$, positive in $65\%$ of episodes). However, naive episode-level pooling masks the familiarity effect because baseline transmitter hardness varies widely (Device-mean FAR_B ranges from 0.0% to 65.7% (device 48); single-episode device penetration reaches up to 100%.). To eliminate this hardware confound, our novel **Device-Matched Paired Design** evaluates the exact same physical devices on identical test packets at $\tau_{\text{full}}$ (familiar) versus $\tau_{(-j)}$ (unfamiliar). This isolates the pure familiarity effect, proving a **statistically significant gap of $\Delta\text{FAR}_{\text{matched}} = +1.47\%$ with a strictly positive 95% device bootstrap CI: $[+0.72\%, +2.40\%]$**.
 
 #### RQ2 (Outlier Exposure Scaling & Single-Device Sensitivity):
 *How does the number of available proxy transmitters ($k \in \{0, 1, 3, 5, 10, 15\}$) govern threshold calibration stability, and what happens when only a single proxy device is available?*
@@ -272,7 +272,7 @@ The following table contrasts the actual empirical numbers reported by key exist
 #### RQ4 (Remedy Validation & Operational Availability Cost):
 *Can Leave-One-Proxy-Out (LOPO) cross-validation provide an honest estimate of stranger penetration, and what is the real-world operational availability cost of deploying an identity-robust threshold ($\tau_{\text{robust}}$)?*
 - **Empirical Answer / Result:**  
-  LOPO provides a mathematically rigorous identity-disjoint validation protocol, but its absolute estimation error ($0.0327$) is comparable to naive testing ($0.0323$) due to finite proxy sample variance. Enforcing an identity-robust threshold ($\tau_{\text{robust}}$) slashes true stranger penetration from $11.55\%$ down to $4.17\%$ (with 4 episodes reaching $0.0\%$ penetration). However, this protection incurs a **catastrophic availability penalty**: the False Rejection Rate ($\text{FRR}$) of legitimate smart meters surges from $8.49\%$ to **$30.18\%$** on average (peaking at $84.63\%$). In a municipal AMR grid, rejecting 1 in 3 valid meter packets would trigger network packet storms and rapidly drain meter batteries.
+  LOPO provides a mathematically rigorous identity-disjoint validation protocol, but its absolute estimation error ($0.0327$) is comparable to naive testing ($0.0323$) due to finite proxy sample variance. Enforcing an identity-robust threshold ($\tau_{\text{robust}}$) reduces episode-mean true stranger penetration from $11.90\%$ down to $4.43\%$ (a $62.8\%$ reduction, with 4 episodes reaching $0.0\%$ penetration). However, this protection incurs a **catastrophic availability penalty**: the False Rejection Rate ($\text{FRR}$) of legitimate smart meters surges from $8.49\%$ to **$30.08\%$** on average (+21.59 pp, peaking at $84.63\%$). In a municipal AMR grid, rejecting 1 in 3 valid meter packets would trigger network packet storms and rapidly drain meter batteries.
 
 #### RQ5 (Temporal Burst Fusion & Practical AMR Availability):
 *Can multi-packet burst aggregation ($L \in \{1, 3, 5\}$ consecutive frames) overcome the single-packet baseline trade-off to achieve deployment-grade availability and higher stranger discrimination?*
@@ -298,7 +298,7 @@ The following table contrasts the actual empirical numbers reported by key exist
 flowchart TD
     subgraph Current["Our Findings (Foundation)"]
         F1["Identified Familiarity Gap (+1.47% matched, +19.41% single-proxy)"]
-        F2["Quantified Robust Availability Cost (FRR surges to 30.18%)"]
+        F2["Quantified Robust Availability Cost (FRR surges to 30.08%)"]
         F3["Exposed Hardware Batch Clustering (Block 4 Vulnerabilities)"]
     end
 
@@ -478,7 +478,7 @@ All reported numbers are calculated from 20 seeded experimental episodes across 
 | **AUROC (Condition B)** | Episode ($n=20$) | **0.9490** | [0.9367, 0.9605] | 0.0284 | 0.8846 | 0.9855 |
 | **Closed-Set Macro $F_1$** | Episode ($n=20$) | **99.43%** | [99.32%, 99.53%] | 0.24% | 98.72% | 99.81% |
 
-> **Key Finding:** In random episode device splits, $\Delta\text{FAR}$ is positive in 65% of episodes (13 of 20). However, naive episode-level pooling masks the familiarity effect because physical device heterogeneity is vast (individual device penetration ranges from 0.0% to 98.5%).
+> **Key Finding:** In random episode device splits, $\Delta\text{FAR}$ is positive in 65% of episodes (13 of 20). However, naive episode-level pooling masks the familiarity effect because physical device heterogeneity is vast (device-mean FAR_B ranges from 0.0% to 65.7% (device 48); single-episode device penetration reaches up to 100%).
 
 ---
 
@@ -529,10 +529,10 @@ The empirical vulnerability ranking across the 60 physical devices demonstrates 
 
 | Operating Mode | Mean Threshold $\tau$ | True Stranger FAR ($\text{FAR}_B$) | Legitimate FRR | Operational Impact on Smart Grid |
 |---|---|---|---|---|
-| **Youden Operating Point ($\tau^*$)** | 0.7040 | **11.55%** | **8.49%** | Standard screening; balanced false alarms. |
-| **Identity-Robust Point ($\tau_{\text{robust}}$)** | 0.8540 | **4.17%** | **30.18%** | **Catastrophic availability loss!** Nearly 1 in 3 legitimate meter readings rejected. |
+| **Youden Operating Point ($\tau^*$)** | 0.7040 | **11.90%** (ep. mean) / 11.55% (dev. boot) | **8.49%** | Standard screening; balanced false alarms. |
+| **Identity-Robust Point ($\tau_{\text{robust}}$)** | 0.8540 | **4.43%** | **30.08%** | **Catastrophic availability loss!** Nearly 1 in 3 legitimate meter readings rejected. |
 
-> Setting $\tau_{\text{robust}}$ to enforce 90th-percentile proxy rejection slashes rogue penetration from 11.55% to 4.17% (with 4 episodes reaching 0.0% penetration). However, False Rejection surges to **30.18%** on average (and reaches **84.63%** in episode 4), which would trigger severe radio retransmissions and drain meter batteries.
+> Setting $\tau_{\text{robust}}$ to enforce 90th-percentile proxy rejection reduces episode-mean rogue penetration from 11.90% to 4.43% (a 62.8% reduction, with 4 episodes reaching 0.0% penetration). However, False Rejection surges to **30.08%** on average (+21.59 pp, and reaches **84.63%** in episode 19), which would trigger severe radio retransmissions and drain meter batteries.
 
 ---
 
